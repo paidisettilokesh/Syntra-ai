@@ -1,0 +1,43 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mail_agent"
+version = "0.1.0"
+description = "Syntra AI – Autonomous Email Intelligence Platform"
+requires-python = ">=3.11"
+dependencies = [
+    "pydantic[email]>=2.0.0",
+    "pydantic-settings>=2.0.0",
+    "python-dotenv>=1.0.0",
+    "google-generativeai>=0.3.0",
+    "groq>=0.4.2",
+    "openai>=1.12.0",
+    "requests>=2.31.0",
+    "pytesseract>=0.3.10",
+    "pdfplumber>=0.10.0",
+    "PyMuPDF>=1.23.0",
+    "python-docx>=1.0.0",
+    "beautifulsoup4>=4.12.0",
+    "Pillow>=10.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "black>=24.0.0",
+    "isort>=5.13.0",
+    "flake8>=7.0.0",
+    "pre-commit>=3.6.0"
+]
+
+[tool.black]
+line-length = 100
+target-version = ['py312']
+include = '\.pyi?$'
+
+[tool.isort]
+profile = "black"
+line_length = 100
+multi_line_output = 3

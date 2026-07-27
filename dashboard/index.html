@@ -1,0 +1,1230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Syntra AI — Mail Agent Dashboard</title>
+  <meta name="description" content="Real-time monitoring dashboard for Syntra AI Mail Agent — track email threats, risk scores, and system health." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    :root {
+      --bg-primary:    #080c14;
+      --bg-secondary:  #0d1422;
+      --bg-card:       rgba(255,255,255,0.04);
+      --bg-card-hover: rgba(255,255,255,0.07);
+      --border:        rgba(255,255,255,0.08);
+      --border-glow:   rgba(99,179,237,0.25);
+      --text-primary:  #f0f4ff;
+      --text-secondary:#8898b0;
+      --text-muted:    #4a5568;
+      --accent-blue:   #4f9eff;
+      --accent-cyan:   #00d4ff;
+      --accent-purple: #a78bfa;
+      --accent-green:  #34d399;
+      --accent-yellow: #fbbf24;
+      --accent-orange: #f97316;
+      --accent-red:    #f87171;
+      --risk-low:      #34d399;
+      --risk-medium:   #fbbf24;
+      --risk-high:     #f97316;
+      --risk-critical: #f87171;
+      --gradient-1: linear-gradient(135deg, #1a1f35 0%, #0d1422 50%, #111827 100%);
+      --glow-blue: 0 0 40px rgba(79,158,255,0.15);
+      --glow-cyan: 0 0 30px rgba(0,212,255,0.12);
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 18px;
+      --radius-xl: 24px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ── Animated background ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 50% at 20% 10%, rgba(79,158,255,0.08) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 40% at 80% 80%, rgba(167,139,250,0.07) 0%, transparent 55%),
+        radial-gradient(ellipse 40% 30% at 50% 50%, rgba(0,212,255,0.04) 0%, transparent 60%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── Layout ── */
+    .app-wrapper { position: relative; z-index: 1; }
+
+    /* ── Top Navigation ── */
+    .navbar {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(8,12,20,0.85);
+      backdrop-filter: blur(20px) saturate(180%);
+      border-bottom: 1px solid var(--border);
+      padding: 0 32px;
+      height: 64px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+
+    .navbar-brand {
+      display: flex; align-items: center; gap: 12px;
+      text-decoration: none;
+    }
+
+    .brand-icon {
+      width: 36px; height: 36px;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+      box-shadow: 0 0 20px rgba(79,158,255,0.3);
+    }
+
+    .brand-text {
+      font-size: 16px; font-weight: 700;
+      background: linear-gradient(90deg, var(--accent-blue), var(--accent-cyan));
+      -webkit-background-clip: text; background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .brand-subtitle { font-size: 11px; color: var(--text-muted); letter-spacing: 1px; text-transform: uppercase; }
+
+    .navbar-right {
+      display: flex; align-items: center; gap: 16px;
+    }
+
+    .health-badge {
+      display: flex; align-items: center; gap: 8px;
+      background: rgba(52,211,153,0.1);
+      border: 1px solid rgba(52,211,153,0.2);
+      border-radius: 20px;
+      padding: 6px 14px;
+      font-size: 12px; font-weight: 500;
+      color: var(--accent-green);
+      cursor: default;
+    }
+
+    .health-dot {
+      width: 7px; height: 7px;
+      background: var(--accent-green);
+      border-radius: 50%;
+      animation: pulse-dot 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.8); }
+    }
+
+    .health-badge.offline { background: rgba(248,113,113,0.1); border-color: rgba(248,113,113,0.2); color: var(--accent-red); }
+    .health-badge.offline .health-dot { background: var(--accent-red); animation: none; }
+
+    .refresh-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
+      padding: 7px 14px;
+      font-size: 12px; font-weight: 500; font-family: inherit;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .refresh-btn:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--border-glow);
+      color: var(--text-primary);
+    }
+    .refresh-btn.spinning svg { animation: spin 0.7s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .last-updated {
+      font-size: 11px; color: var(--text-muted);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* ── Main Content ── */
+    .main-content { padding: 32px; max-width: 1600px; margin: 0 auto; }
+
+    .page-header { margin-bottom: 32px; }
+    .page-title { font-size: 28px; font-weight: 800; letter-spacing: -0.5px; }
+    .page-title span {
+      background: linear-gradient(90deg, var(--accent-blue), var(--accent-cyan), var(--accent-purple));
+      -webkit-background-clip: text; background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .page-subtitle { font-size: 14px; color: var(--text-secondary); margin-top: 4px; }
+
+    /* ── Stat Cards ── */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      margin-bottom: 28px;
+    }
+
+    @media (max-width: 1100px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 600px)  { .stats-grid { grid-template-columns: 1fr; } }
+
+    .stat-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      position: relative; overflow: hidden;
+      transition: all 0.3s ease;
+      cursor: default;
+    }
+
+    .stat-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--card-accent, linear-gradient(90deg, var(--accent-blue), var(--accent-cyan)));
+      border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    }
+
+    .stat-card::after {
+      content: '';
+      position: absolute; top: -60px; right: -30px;
+      width: 120px; height: 120px;
+      background: var(--card-glow, rgba(79,158,255,0.05));
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .stat-card:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--border-glow);
+      transform: translateY(-2px);
+      box-shadow: var(--glow-blue);
+    }
+
+    .stat-card.green  { --card-accent: linear-gradient(90deg, #34d399, #059669); --card-glow: rgba(52,211,153,0.06); }
+    .stat-card.red    { --card-accent: linear-gradient(90deg, #f87171, #dc2626); --card-glow: rgba(248,113,113,0.06); }
+    .stat-card.purple { --card-accent: linear-gradient(90deg, #a78bfa, #7c3aed); --card-glow: rgba(167,139,250,0.06); }
+    .stat-card.orange { --card-accent: linear-gradient(90deg, #f97316, #ea580c); --card-glow: rgba(249,115,22,0.06); }
+
+    .stat-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 16px; }
+
+    .stat-icon {
+      width: 42px; height: 42px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px;
+      background: rgba(255,255,255,0.05);
+    }
+
+    .stat-badge {
+      font-size: 10px; font-weight: 600;
+      letter-spacing: 1px; text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.06);
+      color: var(--text-muted);
+    }
+
+    .stat-value {
+      font-size: 38px; font-weight: 800;
+      letter-spacing: -1px; line-height: 1;
+      margin-bottom: 6px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .stat-label { font-size: 13px; color: var(--text-secondary); font-weight: 500; }
+
+    .stat-trend {
+      margin-top: 12px; padding-top: 12px;
+      border-top: 1px solid var(--border);
+      font-size: 11px; color: var(--text-muted);
+      display: flex; align-items: center; gap: 4px;
+    }
+
+    /* ── Charts Grid ── */
+    .charts-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1.5fr;
+      gap: 20px;
+      margin-bottom: 28px;
+    }
+
+    @media (max-width: 1200px) { .charts-grid { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 768px)  { .charts-grid { grid-template-columns: 1fr; } }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      transition: border-color 0.3s ease;
+    }
+
+    .card:hover { border-color: var(--border-glow); }
+
+    .card-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .card-title {
+      font-size: 14px; font-weight: 600;
+      color: var(--text-primary);
+      display: flex; align-items: center; gap: 8px;
+    }
+
+    .card-title-icon {
+      width: 28px; height: 28px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 7px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px;
+    }
+
+    .card-subtitle { font-size: 11px; color: var(--text-muted); }
+
+    .chart-container { position: relative; }
+
+    /* ── Email Table ── */
+    .table-section { margin-bottom: 28px; }
+
+    .table-controls {
+      display: flex; align-items: center; gap: 12px;
+      margin-bottom: 16px; flex-wrap: wrap;
+    }
+
+    .search-box {
+      flex: 1; min-width: 200px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 9px 14px 9px 36px;
+      font-size: 13px; font-family: inherit; color: var(--text-primary);
+      outline: none; transition: border-color 0.2s ease;
+      position: relative;
+    }
+    .search-wrapper { position: relative; flex: 1; min-width: 200px; }
+    .search-icon {
+      position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+      color: var(--text-muted); pointer-events: none;
+      font-size: 14px;
+    }
+    .search-box:focus { border-color: var(--border-glow); }
+    .search-box::placeholder { color: var(--text-muted); }
+
+    .filter-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
+      padding: 9px 16px;
+      font-size: 12px; font-weight: 500; font-family: inherit;
+      cursor: pointer; transition: all 0.2s ease; white-space: nowrap;
+    }
+    .filter-btn:hover, .filter-btn.active {
+      background: rgba(79,158,255,0.1);
+      border-color: rgba(79,158,255,0.3);
+      color: var(--accent-blue);
+    }
+
+    .table-wrapper {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+
+    .email-table { width: 100%; border-collapse: collapse; }
+
+    .email-table th {
+      background: rgba(255,255,255,0.03);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 16px;
+      text-align: left;
+      font-size: 11px; font-weight: 600;
+      letter-spacing: 0.8px; text-transform: uppercase;
+      color: var(--text-muted);
+      cursor: pointer; user-select: none;
+      white-space: nowrap;
+    }
+    .email-table th:hover { color: var(--text-secondary); }
+
+    .email-table td {
+      padding: 14px 16px;
+      font-size: 13px;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      vertical-align: middle;
+      max-width: 0;
+    }
+
+    .email-table tr:last-child td { border-bottom: none; }
+
+    .email-table tbody tr {
+      transition: background 0.15s ease;
+      cursor: pointer;
+    }
+    .email-table tbody tr:hover { background: rgba(255,255,255,0.03); }
+
+    .cell-sender { max-width: 200px; }
+    .cell-subject { max-width: 260px; }
+
+    .truncate {
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+      display: block;
+    }
+    .sender-name { font-weight: 500; color: var(--text-primary); }
+    .sender-email { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+
+    /* Risk badges */
+    .badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 11px; font-weight: 600;
+      white-space: nowrap;
+    }
+    .badge-dot { width: 6px; height: 6px; border-radius: 50%; }
+
+    .badge-low      { background: rgba(52,211,153,0.15); color: var(--risk-low);      border: 1px solid rgba(52,211,153,0.25); }
+    .badge-medium   { background: rgba(251,191,36,0.15);  color: var(--risk-medium);   border: 1px solid rgba(251,191,36,0.25); }
+    .badge-high     { background: rgba(249,115,22,0.15);  color: var(--risk-high);     border: 1px solid rgba(249,115,22,0.25); }
+    .badge-critical { background: rgba(248,113,113,0.15); color: var(--risk-critical); border: 1px solid rgba(248,113,113,0.25); }
+    .badge-legit    { background: rgba(79,158,255,0.12);  color: var(--accent-blue);   border: 1px solid rgba(79,158,255,0.2); }
+    .badge-suspicious { background: rgba(248,113,113,0.12); color: var(--accent-red); border: 1px solid rgba(248,113,113,0.2); }
+
+    .badge-low    .badge-dot { background: var(--risk-low); }
+    .badge-medium .badge-dot { background: var(--risk-medium); }
+    .badge-high   .badge-dot { background: var(--risk-high); }
+    .badge-critical .badge-dot { background: var(--risk-critical); }
+
+    /* Category pill */
+    .category-pill {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 6px;
+      font-size: 11px; font-weight: 500;
+      background: rgba(255,255,255,0.06);
+      color: var(--text-secondary);
+      white-space: nowrap;
+    }
+
+    /* Notif status */
+    .notif-icon { font-size: 16px; }
+
+    /* Risk score bar */
+    .risk-score-cell { min-width: 100px; }
+    .risk-bar-wrap { display: flex; align-items: center; gap: 8px; }
+    .risk-bar-bg {
+      flex: 1; height: 5px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 3px; overflow: hidden;
+    }
+    .risk-bar-fill {
+      height: 100%; border-radius: 3px;
+      transition: width 0.6s ease;
+    }
+    .risk-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px; font-weight: 500;
+      min-width: 28px;
+    }
+
+    /* ── Pagination ── */
+    .pagination {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 20px;
+      border-top: 1px solid var(--border);
+      background: rgba(255,255,255,0.02);
+    }
+    .pagination-info { font-size: 12px; color: var(--text-muted); }
+    .pagination-controls { display: flex; gap: 8px; }
+    .page-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
+      padding: 6px 14px;
+      font-size: 12px; font-family: inherit;
+      cursor: pointer; transition: all 0.2s ease;
+    }
+    .page-btn:hover:not(:disabled) {
+      background: var(--bg-card-hover); border-color: var(--border-glow);
+      color: var(--text-primary);
+    }
+    .page-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+    .page-btn.current {
+      background: rgba(79,158,255,0.15);
+      border-color: rgba(79,158,255,0.3);
+      color: var(--accent-blue);
+    }
+
+    /* ── Empty & Loading states ── */
+    .empty-state {
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 60px 24px;
+      color: var(--text-muted);
+      gap: 12px;
+    }
+    .empty-icon { font-size: 42px; opacity: 0.4; }
+    .empty-text { font-size: 14px; }
+
+    .skeleton {
+      background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.04) 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+      border-radius: 4px;
+    }
+    @keyframes shimmer { to { background-position: -200% 0; } }
+
+    /* ── Detail Modal ── */
+    .modal-overlay {
+      position: fixed; inset: 0; z-index: 1000;
+      background: rgba(8,12,20,0.8);
+      backdrop-filter: blur(10px);
+      display: none; align-items: center; justify-content: center;
+      padding: 24px;
+    }
+    .modal-overlay.open { display: flex; }
+
+    .modal {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      width: 100%; max-width: 680px;
+      max-height: 90vh; overflow-y: auto;
+      animation: modal-in 0.25s ease;
+    }
+    @keyframes modal-in {
+      from { opacity: 0; transform: translateY(16px) scale(0.98); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .modal-header {
+      display: flex; align-items: flex-start; justify-content: space-between;
+      padding: 24px 24px 16px;
+      border-bottom: 1px solid var(--border);
+      position: sticky; top: 0;
+      background: var(--bg-secondary);
+      border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+    }
+
+    .modal-title { font-size: 16px; font-weight: 700; }
+    .modal-close {
+      width: 32px; height: 32px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
+      cursor: pointer; font-size: 18px; line-height: 1;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.2s ease;
+    }
+    .modal-close:hover { background: var(--bg-card-hover); color: var(--text-primary); }
+
+    .modal-body { padding: 24px; display: flex; flex-direction: column; gap: 20px; }
+
+    .detail-section { }
+    .detail-section-title {
+      font-size: 10px; font-weight: 700; letter-spacing: 1.2px;
+      text-transform: uppercase; color: var(--text-muted);
+      margin-bottom: 10px;
+    }
+
+    .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .detail-item { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px; }
+    .detail-key { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 4px; }
+    .detail-val { font-size: 13px; font-weight: 500; }
+
+    .detail-reason {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 14px;
+      font-size: 12px; line-height: 1.6; color: var(--text-secondary);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .rules-list { display: flex; flex-wrap: wrap; gap: 6px; }
+    .rule-tag {
+      background: rgba(79,158,255,0.1);
+      border: 1px solid rgba(79,158,255,0.2);
+      border-radius: 6px;
+      padding: 4px 10px;
+      font-size: 11px; color: var(--accent-blue);
+    }
+    .rule-tag.threat {
+      background: rgba(248,113,113,0.1);
+      border-color: rgba(248,113,113,0.2);
+      color: var(--accent-red);
+    }
+
+    /* ── Footer ── */
+    .footer {
+      text-align: center; padding: 24px 32px;
+      border-top: 1px solid var(--border);
+      font-size: 11px; color: var(--text-muted);
+    }
+
+    /* ── Scrollbar ── */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+
+    /* ── Toast ── */
+    .toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 9999; display: flex; flex-direction: column; gap: 8px; }
+    .toast {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 12px 18px;
+      font-size: 13px;
+      animation: toast-in 0.3s ease, toast-out 0.3s ease 2.7s forwards;
+      display: flex; align-items: center; gap: 10px;
+    }
+    @keyframes toast-in  { from { opacity:0; transform: translateX(20px); } to { opacity:1; transform: translateX(0); } }
+    @keyframes toast-out { from { opacity:1; } to { opacity:0; } }
+  </style>
+</head>
+<body>
+<div class="app-wrapper">
+
+  <!-- Navigation -->
+  <nav class="navbar">
+    <a class="navbar-brand" href="#" id="nav-brand">
+      <div class="brand-icon">🛡️</div>
+      <div>
+        <div class="brand-text">Syntra AI</div>
+        <div class="brand-subtitle">Mail Agent Dashboard</div>
+      </div>
+    </a>
+    <div class="navbar-right">
+      <span class="last-updated" id="last-updated-label">Connecting...</span>
+      <button class="refresh-btn" id="refresh-btn" onclick="refreshAll()">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+        Refresh
+      </button>
+      <div class="health-badge offline" id="health-badge">
+        <div class="health-dot"></div>
+        <span id="health-label">Connecting</span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <div class="page-header">
+      <h1 class="page-title">Email Intelligence <span>Overview</span></h1>
+      <p class="page-subtitle">Real-time monitoring of email threats, risk scores, and processing activity</p>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="stats-grid" id="stats-grid">
+      <div class="stat-card" id="card-total">
+        <div class="stat-header">
+          <div class="stat-icon">📬</div>
+          <span class="stat-badge">All Time</span>
+        </div>
+        <div class="stat-value" id="stat-total">—</div>
+        <div class="stat-label">Emails Processed</div>
+        <div class="stat-trend">📅 Total analyzed by agent</div>
+      </div>
+      <div class="stat-card red" id="card-blocked">
+        <div class="stat-header">
+          <div class="stat-icon">🚫</div>
+          <span class="stat-badge">Blocked</span>
+        </div>
+        <div class="stat-value" id="stat-blocked" style="color:var(--accent-red)">—</div>
+        <div class="stat-label">Emails Blocked</div>
+        <div class="stat-trend">⚠️ Suspicious emails intercepted</div>
+      </div>
+      <div class="stat-card green" id="card-sent">
+        <div class="stat-header">
+          <div class="stat-icon">🔔</div>
+          <span class="stat-badge">Delivered</span>
+        </div>
+        <div class="stat-value" id="stat-sent" style="color:var(--accent-green)">—</div>
+        <div class="stat-label">Notifications Sent</div>
+        <div class="stat-trend">✅ Alerts delivered to your devices</div>
+      </div>
+      <div class="stat-card orange" id="card-risk">
+        <div class="stat-header">
+          <div class="stat-icon">⚡</div>
+          <span class="stat-badge">Avg Score</span>
+        </div>
+        <div class="stat-value" id="stat-risk" style="color:var(--accent-orange)">—</div>
+        <div class="stat-label">Average Risk Score</div>
+        <div class="stat-trend">🎯 Threat level indicator (0–100)</div>
+      </div>
+    </div>
+
+    <!-- Charts -->
+    <div class="charts-grid">
+      <!-- Category Donut -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <div class="card-title-icon">📂</div>
+            Category Distribution
+          </div>
+          <span class="card-subtitle" id="category-count">—</span>
+        </div>
+        <div class="chart-container" style="height:220px">
+          <canvas id="categoryChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Risk Level Donut -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <div class="card-title-icon">⚡</div>
+            Risk Distribution
+          </div>
+          <span class="card-subtitle" id="risk-count">—</span>
+        </div>
+        <div class="chart-container" style="height:220px">
+          <canvas id="riskChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Timeline -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <div class="card-title-icon">📈</div>
+            Emails Over Time
+          </div>
+          <span class="card-subtitle">Last 7 days</span>
+        </div>
+        <div class="chart-container" style="height:220px">
+          <canvas id="timelineChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Email Table -->
+    <div class="table-section">
+      <div class="card-header" style="margin-bottom:14px">
+        <div class="card-title" style="font-size:16px">
+          <div class="card-title-icon" style="width:32px;height:32px;font-size:16px">📋</div>
+          Recent Emails
+        </div>
+        <span class="card-subtitle" id="table-count">Loading...</span>
+      </div>
+
+      <div class="table-controls">
+        <div class="search-wrapper">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="search-input" class="search-box" placeholder="Search sender, subject, category…" oninput="filterTable()" />
+        </div>
+        <button class="filter-btn active" id="filter-all"        onclick="setFilter('all')">All</button>
+        <button class="filter-btn"        id="filter-suspicious" onclick="setFilter('suspicious')">⚠️ Suspicious</button>
+        <button class="filter-btn"        id="filter-blocked"    onclick="setFilter('blocked')">🚫 Blocked</button>
+        <button class="filter-btn"        id="filter-sent"       onclick="setFilter('sent')">🔔 Notified</button>
+      </div>
+
+      <div class="table-wrapper">
+        <table class="email-table" id="email-table">
+          <thead>
+            <tr>
+              <th onclick="sortTable('sender')">Sender ↕</th>
+              <th onclick="sortTable('subject')">Subject ↕</th>
+              <th onclick="sortTable('category')">Category ↕</th>
+              <th onclick="sortTable('risk_score')">Risk Score ↕</th>
+              <th onclick="sortTable('risk_level')">Level ↕</th>
+              <th onclick="sortTable('verification_status')">Status ↕</th>
+              <th onclick="sortTable('notification_status')">Notif ↕</th>
+              <th onclick="sortTable('processed_at')">Time ↕</th>
+            </tr>
+          </thead>
+          <tbody id="email-tbody">
+            <tr><td colspan="8"><div class="empty-state"><div class="empty-icon">⏳</div><div class="empty-text">Loading emails…</div></div></td></tr>
+          </tbody>
+        </table>
+        <div class="pagination" id="pagination" style="display:none">
+          <span class="pagination-info" id="pagination-info"></span>
+          <div class="pagination-controls" id="pagination-controls"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    Syntra AI Mail Agent &nbsp;·&nbsp; Built with ❤️ &nbsp;·&nbsp;
+    <a href="/health" target="_blank" style="color:var(--accent-blue);text-decoration:none">Health</a> &nbsp;·&nbsp;
+    <a href="/metrics" target="_blank" style="color:var(--accent-blue);text-decoration:none">Metrics</a>
+  </footer>
+</div>
+
+<!-- Detail Modal -->
+<div class="modal-overlay" id="detail-modal" onclick="closeModal(event)">
+  <div class="modal" id="modal-inner">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title" id="modal-subject">Email Detail</div>
+        <div style="font-size:12px;color:var(--text-muted);margin-top:4px" id="modal-sender"></div>
+      </div>
+      <button class="modal-close" onclick="closeModalDirect()">✕</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+
+<!-- Toast container -->
+<div class="toast-container" id="toast-container"></div>
+
+<script>
+// ── State ───────────────────────────────────────────────────────────────────
+const API_BASE = '';
+let allEmails = [];
+let filteredEmails = [];
+let sortKey = 'processed_at';
+let sortDir = -1;
+let currentFilter = 'all';
+let currentPage = 0;
+const PAGE_SIZE = 25;
+let categoryChart, riskChart, timelineChart;
+
+// ── Chart defaults ──────────────────────────────────────────────────────────
+Chart.defaults.color = '#8898b0';
+Chart.defaults.font.family = 'Inter';
+
+const CATEGORY_COLORS = [
+  '#4f9eff','#a78bfa','#34d399','#fbbf24','#f97316','#f87171',
+  '#00d4ff','#6366f1','#ec4899','#14b8a6','#84cc16','#fb923c'
+];
+
+const RISK_COLORS = {
+  'Low': '#34d399', 'Medium': '#fbbf24', 'High': '#f97316', 'Critical': '#f87171'
+};
+
+// ── Init ─────────────────────────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', () => {
+  initCharts();
+  refreshAll();
+  setInterval(refreshAll, 60000); // Auto-refresh every 60s
+});
+
+async function refreshAll() {
+  const btn = document.getElementById('refresh-btn');
+  btn.classList.add('spinning');
+  try {
+    await Promise.all([checkHealth(), loadStats(), loadEmails()]);
+    document.getElementById('last-updated-label').textContent =
+      'Updated ' + new Date().toLocaleTimeString();
+  } catch(e) {
+    showToast('⚠️ Failed to refresh data', 'error');
+  } finally {
+    btn.classList.remove('spinning');
+  }
+}
+
+// ── Health ──────────────────────────────────────────────────────────────────
+async function checkHealth() {
+  try {
+    const res = await fetch(`${API_BASE}/health`);
+    const data = await res.json();
+    const badge = document.getElementById('health-badge');
+    const label = document.getElementById('health-label');
+    if (data.status === 'ok') {
+      badge.className = 'health-badge';
+      const hrs = Math.floor(data.uptime_seconds / 3600);
+      const mins = Math.floor((data.uptime_seconds % 3600) / 60);
+      label.textContent = hrs > 0 ? `Online · ${hrs}h ${mins}m` : `Online · ${mins}m`;
+    } else {
+      badge.className = 'health-badge offline';
+      label.textContent = 'Degraded';
+    }
+  } catch {
+    const badge = document.getElementById('health-badge');
+    badge.className = 'health-badge offline';
+    document.getElementById('health-label').textContent = 'Offline';
+  }
+}
+
+// ── Stats ───────────────────────────────────────────────────────────────────
+async function loadStats() {
+  try {
+    const res = await fetch(`${API_BASE}/api/stats`);
+    if (!res.ok) return;
+    const data = await res.json();
+
+    // Stat cards
+    animateCount('stat-total',   data.total_emails    || 0);
+    animateCount('stat-blocked', data.emails_blocked  || 0);
+    animateCount('stat-sent',    data.notifications_sent || 0);
+    setStatValue('stat-risk', (data.avg_risk_score || 0).toFixed(1));
+
+    // Charts
+    updateCategoryChart(data.category_distribution || {});
+    updateRiskChart(data.risk_level_distribution || {});
+    updateTimelineChart(data.emails_per_day || []);
+
+    document.getElementById('category-count').textContent =
+      Object.keys(data.category_distribution || {}).length + ' categories';
+  } catch(e) {
+    console.warn('Stats load error:', e);
+  }
+}
+
+// ── Emails ───────────────────────────────────────────────────────────────────
+async function loadEmails() {
+  try {
+    const res = await fetch(`${API_BASE}/api/emails?limit=200`);
+    if (!res.ok) return;
+    const data = await res.json();
+    allEmails = data.emails || [];
+    applyFiltersAndRender();
+    document.getElementById('table-count').textContent = allEmails.length + ' emails loaded';
+  } catch(e) {
+    console.warn('Emails load error:', e);
+    document.getElementById('table-count').textContent = 'Failed to load';
+  }
+}
+
+// ── Filter & Sort ────────────────────────────────────────────────────────────
+function setFilter(f) {
+  currentFilter = f;
+  currentPage = 0;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('filter-' + f).classList.add('active');
+  applyFiltersAndRender();
+}
+
+function filterTable() {
+  currentPage = 0;
+  applyFiltersAndRender();
+}
+
+function applyFiltersAndRender() {
+  const query = (document.getElementById('search-input').value || '').toLowerCase();
+
+  filteredEmails = allEmails.filter(e => {
+    // Filter tab
+    if (currentFilter === 'suspicious' && e.verification_status !== 'Suspicious') return false;
+    if (currentFilter === 'blocked'    && e.notification_status !== 'blocked_by_security') return false;
+    if (currentFilter === 'sent'       && e.notification_status !== 'sent') return false;
+
+    // Search
+    if (query) {
+      const haystack = [e.sender, e.subject, e.category, e.risk_level].join(' ').toLowerCase();
+      if (!haystack.includes(query)) return false;
+    }
+    return true;
+  });
+
+  // Sort
+  filteredEmails.sort((a, b) => {
+    let va = a[sortKey] ?? '', vb = b[sortKey] ?? '';
+    if (typeof va === 'number') return (va - vb) * sortDir;
+    return String(va).localeCompare(String(vb)) * sortDir;
+  });
+
+  renderTable();
+  renderPagination();
+}
+
+function sortTable(key) {
+  if (sortKey === key) sortDir *= -1;
+  else { sortKey = key; sortDir = -1; }
+  currentPage = 0;
+  applyFiltersAndRender();
+}
+
+// ── Table Render ─────────────────────────────────────────────────────────────
+function renderTable() {
+  const tbody = document.getElementById('email-tbody');
+  const start = currentPage * PAGE_SIZE;
+  const slice = filteredEmails.slice(start, start + PAGE_SIZE);
+
+  if (slice.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="8"><div class="empty-state">
+      <div class="empty-icon">📭</div>
+      <div class="empty-text">No emails match your current filters</div>
+    </div></td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = slice.map(e => {
+    const senderName = extractName(e.sender);
+    const senderEmail = extractEmail(e.sender);
+    const riskClass = riskLevelClass(e.risk_level);
+    const statusClass = e.verification_status === 'Suspicious' ? 'badge-suspicious' : 'badge-legit';
+    const notifIcon = notifStatusIcon(e.notification_status);
+    const riskBarColor = RISK_COLORS[e.risk_level] || '#8898b0';
+    const riskPct = Math.min(e.risk_score || 0, 100);
+    const timeStr = formatTime(e.processed_at);
+
+    return `<tr onclick="showDetail(${JSON.stringify(e).replace(/"/g, '&quot;')})">
+      <td class="cell-sender">
+        <span class="sender-name truncate">${esc(senderName)}</span>
+        <span class="sender-email truncate">${esc(senderEmail)}</span>
+      </td>
+      <td class="cell-subject">
+        <span class="truncate" title="${esc(e.subject || '')}">${esc(e.subject || '—')}</span>
+      </td>
+      <td><span class="category-pill">${esc(e.category || '—')}</span></td>
+      <td class="risk-score-cell">
+        <div class="risk-bar-wrap">
+          <div class="risk-bar-bg">
+            <div class="risk-bar-fill" style="width:${riskPct}%;background:${riskBarColor}"></div>
+          </div>
+          <span class="risk-num" style="color:${riskBarColor}">${riskPct}</span>
+        </div>
+      </td>
+      <td><span class="badge ${riskClass}"><span class="badge-dot"></span>${esc(e.risk_level || '—')}</span></td>
+      <td><span class="badge ${statusClass}">${esc(e.verification_status || '—')}</span></td>
+      <td><span class="notif-icon" title="${esc(e.notification_status || '')}">${notifIcon}</span></td>
+      <td style="font-size:11px;color:var(--text-muted);white-space:nowrap">${timeStr}</td>
+    </tr>`;
+  }).join('');
+}
+
+function renderPagination() {
+  const totalPages = Math.ceil(filteredEmails.length / PAGE_SIZE);
+  const pg = document.getElementById('pagination');
+  const info = document.getElementById('pagination-info');
+  const controls = document.getElementById('pagination-controls');
+
+  if (totalPages <= 1) { pg.style.display = 'none'; return; }
+  pg.style.display = 'flex';
+
+  const start = currentPage * PAGE_SIZE + 1;
+  const end = Math.min((currentPage + 1) * PAGE_SIZE, filteredEmails.length);
+  info.textContent = `${start}–${end} of ${filteredEmails.length} emails`;
+
+  let html = `<button class="page-btn" onclick="goPage(${currentPage-1})" ${currentPage===0?'disabled':''}>← Prev</button>`;
+  for (let i = 0; i < totalPages && i < 7; i++) {
+    html += `<button class="page-btn ${i===currentPage?'current':''}" onclick="goPage(${i})">${i+1}</button>`;
+  }
+  html += `<button class="page-btn" onclick="goPage(${currentPage+1})" ${currentPage>=totalPages-1?'disabled':''}>Next →</button>`;
+  controls.innerHTML = html;
+}
+
+function goPage(p) {
+  currentPage = p;
+  renderTable();
+  renderPagination();
+}
+
+// ── Charts ───────────────────────────────────────────────────────────────────
+function initCharts() {
+  const chartOpts = {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false }, tooltip: { enabled: true } }
+  };
+
+  categoryChart = new Chart(document.getElementById('categoryChart'), {
+    type: 'doughnut',
+    data: { labels: [], datasets: [{ data: [], backgroundColor: [], borderWidth: 2, borderColor: '#080c14', hoverOffset: 6 }] },
+    options: { ...chartOpts, cutout: '68%',
+      plugins: { ...chartOpts.plugins, legend: { display: true, position: 'right',
+        labels: { font: { size: 11 }, color: '#8898b0', padding: 10, boxWidth: 10, boxHeight: 10, borderRadius: 3 }
+      }}
+    }
+  });
+
+  riskChart = new Chart(document.getElementById('riskChart'), {
+    type: 'doughnut',
+    data: { labels: [], datasets: [{ data: [], backgroundColor: [], borderWidth: 2, borderColor: '#080c14', hoverOffset: 6 }] },
+    options: { ...chartOpts, cutout: '68%',
+      plugins: { ...chartOpts.plugins, legend: { display: true, position: 'right',
+        labels: { font: { size: 11 }, color: '#8898b0', padding: 10, boxWidth: 10, boxHeight: 10, borderRadius: 3 }
+      }}
+    }
+  });
+
+  timelineChart = new Chart(document.getElementById('timelineChart'), {
+    type: 'line',
+    data: { labels: [], datasets: [{
+      label: 'Emails',
+      data: [],
+      borderColor: '#4f9eff',
+      backgroundColor: 'rgba(79,158,255,0.08)',
+      fill: true,
+      tension: 0.4,
+      pointBackgroundColor: '#4f9eff',
+      pointBorderColor: '#080c14',
+      pointBorderWidth: 2,
+      pointRadius: 4,
+      pointHoverRadius: 6,
+    }]},
+    options: { ...chartOpts,
+      scales: {
+        x: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { font: { size: 10 }, color: '#4a5568' } },
+        y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { font: { size: 10 }, color: '#4a5568', stepSize: 1 }, beginAtZero: true }
+      },
+      plugins: { ...chartOpts.plugins, legend: { display: false } }
+    }
+  });
+}
+
+function updateCategoryChart(dist) {
+  const labels = Object.keys(dist);
+  const values = Object.values(dist);
+  const colors = labels.map((_, i) => CATEGORY_COLORS[i % CATEGORY_COLORS.length]);
+  categoryChart.data.labels = labels;
+  categoryChart.data.datasets[0].data = values;
+  categoryChart.data.datasets[0].backgroundColor = colors;
+  categoryChart.update('active');
+}
+
+function updateRiskChart(dist) {
+  const order = ['Low', 'Medium', 'High', 'Critical'];
+  const labels = order.filter(k => dist[k] !== undefined);
+  const values = labels.map(k => dist[k]);
+  const colors = labels.map(k => RISK_COLORS[k]);
+  riskChart.data.labels = labels;
+  riskChart.data.datasets[0].data = values;
+  riskChart.data.datasets[0].backgroundColor = colors;
+  riskChart.update('active');
+}
+
+function updateTimelineChart(daily) {
+  timelineChart.data.labels = daily.map(d => {
+    const dt = new Date(d.day + 'T00:00:00');
+    return dt.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  });
+  timelineChart.data.datasets[0].data = daily.map(d => d.count);
+  timelineChart.update('active');
+}
+
+// ── Modal ────────────────────────────────────────────────────────────────────
+function showDetail(e) {
+  document.getElementById('modal-subject').textContent = e.subject || 'No Subject';
+  document.getElementById('modal-sender').textContent  = e.sender  || 'Unknown Sender';
+
+  const riskColor = RISK_COLORS[e.risk_level] || '#8898b0';
+  const statusEmoji = e.verification_status === 'Suspicious' ? '⚠️' : '✅';
+  const notifLabel = { sent: '✅ Sent', blocked_by_security: '🚫 Blocked', failed: '❌ Failed',
+                       suppressed: '🔇 Suppressed', pending: '⏳ Pending' }[e.notification_status] || e.notification_status;
+
+  const rules = (e.triggered_rules || '').split(',').map(r => r.trim()).filter(Boolean);
+  const rulesHtml = rules.length
+    ? rules.map(r => `<span class="rule-tag">${esc(r)}</span>`).join('')
+    : '<span style="color:var(--text-muted);font-size:12px">No rules triggered</span>';
+
+  document.getElementById('modal-body').innerHTML = `
+    <div class="detail-section">
+      <div class="detail-section-title">Classification</div>
+      <div class="detail-grid">
+        <div class="detail-item"><div class="detail-key">Category</div><div class="detail-val">${esc(e.category||'—')}</div></div>
+        <div class="detail-item"><div class="detail-key">Importance</div><div class="detail-val">${e.importance_score||'—'}/10</div></div>
+        <div class="detail-item"><div class="detail-key">Confidence</div><div class="detail-val">${e.confidence_score ? Math.round(e.confidence_score * 100) + '%' : '—'}</div></div>
+        <div class="detail-item"><div class="detail-key">Notification</div><div class="detail-val">${notifLabel}</div></div>
+      </div>
+    </div>
+    <div class="detail-section">
+      <div class="detail-section-title">Security Verdict</div>
+      <div class="detail-grid">
+        <div class="detail-item"><div class="detail-key">Status</div><div class="detail-val">${statusEmoji} ${esc(e.verification_status||'—')}</div></div>
+        <div class="detail-item"><div class="detail-key">Risk Score</div><div class="detail-val" style="color:${riskColor};font-family:'JetBrains Mono',monospace">${e.risk_score??'—'}/100</div></div>
+        <div class="detail-item"><div class="detail-key">Risk Level</div><div class="detail-val" style="color:${riskColor}">${esc(e.risk_level||'—')}</div></div>
+        <div class="detail-item"><div class="detail-key">Auth Confidence</div><div class="detail-val">${e.verification_confidence ? e.verification_confidence.toFixed(1)+'%' : '—'}</div></div>
+      </div>
+    </div>
+    <div class="detail-section">
+      <div class="detail-section-title">Triggered Rules</div>
+      <div class="rules-list">${rulesHtml}</div>
+    </div>
+    ${e.verification_reason ? `<div class="detail-section">
+      <div class="detail-section-title">Security Reason</div>
+      <div class="detail-reason">${esc(e.verification_reason)}</div>
+    </div>` : ''}
+    <div class="detail-section">
+      <div class="detail-section-title">Timing</div>
+      <div class="detail-item"><div class="detail-key">Processed At</div><div class="detail-val" style="font-family:'JetBrains Mono',monospace;font-size:12px">${esc(e.processed_at||'—')}</div></div>
+    </div>`;
+
+  document.getElementById('detail-modal').classList.add('open');
+}
+
+function closeModal(evt) {
+  if (evt.target.id === 'detail-modal') closeModalDirect();
+}
+function closeModalDirect() {
+  document.getElementById('detail-modal').classList.remove('open');
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModalDirect(); });
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+function esc(str) {
+  return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function extractName(sender) {
+  const m = sender.match(/^"?([^"<]+)"?\s*</);
+  return m ? m[1].trim() : sender.split('@')[0] || sender;
+}
+
+function extractEmail(sender) {
+  const m = sender.match(/<([^>]+)>/);
+  return m ? m[1] : (sender.includes('@') ? sender : '');
+}
+
+function riskLevelClass(level) {
+  return { Low: 'badge-low', Medium: 'badge-medium', High: 'badge-high', Critical: 'badge-critical' }[level] || 'badge-low';
+}
+
+function notifStatusIcon(status) {
+  return { sent: '🔔', blocked_by_security: '🚫', failed: '❌', suppressed: '🔇', pending: '⏳' }[status] || '❓';
+}
+
+function formatTime(ts) {
+  if (!ts) return '—';
+  try {
+    const d = new Date(ts.replace(' ', 'T') + 'Z');
+    const now = new Date();
+    const diffMs = now - d;
+    const diffM = Math.floor(diffMs / 60000);
+    if (diffM < 1)   return 'just now';
+    if (diffM < 60)  return diffM + 'm ago';
+    if (diffM < 1440) return Math.floor(diffM/60) + 'h ago';
+    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  } catch { return ts; }
+}
+
+function animateCount(id, target) {
+  const el = document.getElementById(id);
+  const start = parseInt(el.textContent) || 0;
+  const dur = 600; const fps = 60;
+  const steps = dur / (1000 / fps);
+  let step = 0;
+  const timer = setInterval(() => {
+    step++;
+    const v = Math.round(start + (target - start) * (step / steps));
+    el.textContent = v;
+    if (step >= steps) { el.textContent = target; clearInterval(timer); }
+  }, 1000 / fps);
+}
+
+function setStatValue(id, val) {
+  document.getElementById(id).textContent = val;
+}
+
+function showToast(msg, type = 'info') {
+  const c = document.getElementById('toast-container');
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.innerHTML = msg;
+  c.appendChild(t);
+  setTimeout(() => t.remove(), 3200);
+}
+</script>
+</body>
+</html>
