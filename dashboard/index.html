@@ -3,93 +3,94 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Syntra AI — 3D Cyber Command Center</title>
-  <meta name="description" content="3D Real-time AI Mail Security Command & Monitoring Platform for Syntra AI Mail Agent." />
+  <title>Syntra AI — Autonomous Email Security & Threat Interception Engine</title>
+  <meta name="description" content="Enterprise AI-powered email security platform — autonomous phishing detection, rule verification, multi-channel alerting, and 3D real-time telemetry." />
   
+  <!-- SEO & Social Meta Tags -->
+  <meta property="og:title" content="Syntra AI — Enterprise Autonomous Email Security" />
+  <meta property="og:description" content="Protect your inboxes with Groq AI intelligence, rule verification, and real-time 3D security telemetry." />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;700;900&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
   
   <!-- Chart.js & Three.js CDN -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
   <style>
+    /* ==========================================================================
+       DESIGN SYSTEM TOKENS & TYPOGRAPHY SCALE (WCAG AA COMPLIANT)
+       ========================================================================== */
     :root {
-      --bg-deep:        #040711;
-      --bg-surface:     rgba(10, 16, 30, 0.65);
-      --bg-card:        rgba(15, 23, 42, 0.55);
-      --bg-card-hover:  rgba(25, 38, 66, 0.75);
-      --border-light:   rgba(255, 255, 255, 0.1);
-      --border-glow:    rgba(0, 240, 255, 0.4);
-      --border-accent:  rgba(139, 92, 246, 0.4);
+      /* Backgrounds & Surfaces */
+      --bg-deep:         #060913;
+      --bg-surface:      rgba(13, 20, 36, 0.75);
+      --bg-card:         rgba(18, 28, 50, 0.65);
+      --bg-card-hover:   rgba(26, 40, 70, 0.85);
+      --bg-glass-nav:    rgba(6, 9, 19, 0.85);
       
-      --text-main:      #f1f5f9;
-      --text-sub:       #94a3b8;
-      --text-muted:     #475569;
+      /* Borders & Shadows */
+      --border-light:    rgba(255, 255, 255, 0.12);
+      --border-glow:     rgba(0, 240, 255, 0.45);
+      --border-accent:   rgba(139, 92, 246, 0.45);
+      --shadow-card:     0 20px 40px rgba(0, 0, 0, 0.6), 0 0 20px rgba(0, 240, 255, 0.1);
+      --shadow-cta:      0 8px 30px rgba(0, 240, 255, 0.35);
 
-      --cyan:           #00f0ff;
-      --blue:           #3b82f6;
-      --purple:         #8b5cf6;
-      --pink:           #ec4899;
-      --emerald:        #10b981;
-      --amber:          #f59e0b;
-      --rose:           #f43f5e;
+      /* Typography Contrast Colors */
+      --text-main:       #f8fafc;
+      --text-sub:        #94a3b8;
+      --text-muted:      #64748b;
+      --text-inverse:    #060913;
 
-      --risk-low:       #10b981;
-      --risk-medium:    #f59e0b;
-      --risk-high:      #f97316;
-      --risk-critical:  #f43f5e;
+      /* Brand Accents */
+      --cyan:            #00f0ff;
+      --blue:            #3b82f6;
+      --purple:          #8b5cf6;
+      --pink:            #ec4899;
+      --emerald:         #10b981;
+      --amber:           #f59e0b;
+      --rose:            #f43f5e;
 
-      --font-heading:   'Orbitron', sans-serif;
-      --font-body:      'Inter', sans-serif;
-      --font-mono:      'JetBrains Mono', monospace;
+      /* Typography Tokens */
+      --font-heading:    'Orbitron', sans-serif;
+      --font-body:       'Inter', sans-serif;
+      --font-mono:       'JetBrains Mono', monospace;
 
-      --shadow-3d:      0 20px 50px rgba(0, 0, 0, 0.6), 0 0 30px rgba(0, 240, 255, 0.1);
-      --shadow-neon:    0 0 25px rgba(0, 240, 255, 0.25);
+      /* Focus Outline */
+      --focus-ring:      0 0 0 3px rgba(0, 240, 255, 0.6);
     }
 
     /* ── Light Theme Overrides ── */
     body.light-theme {
-      --bg-deep:        #f1f5f9;
-      --bg-surface:     rgba(255, 255, 255, 0.9);
-      --bg-card:        rgba(255, 255, 255, 0.82);
-      --bg-card-hover:  rgba(255, 255, 255, 0.98);
-      --border-light:   rgba(15, 23, 42, 0.12);
-      --border-glow:    rgba(2, 132, 199, 0.5);
-      --border-accent:  rgba(124, 58, 237, 0.4);
+      --bg-deep:         #f1f5f9;
+      --bg-surface:      rgba(255, 255, 255, 0.92);
+      --bg-card:         rgba(255, 255, 255, 0.85);
+      --bg-card-hover:   rgba(255, 255, 255, 0.98);
+      --bg-glass-nav:    rgba(255, 255, 255, 0.9);
+      
+      --border-light:    rgba(15, 23, 42, 0.12);
+      --border-glow:     rgba(2, 132, 199, 0.5);
+      --border-accent:   rgba(124, 58, 237, 0.4);
+      --shadow-card:     0 20px 40px rgba(15, 23, 42, 0.08), 0 0 20px rgba(2, 132, 199, 0.12);
+      --shadow-cta:      0 8px 25px rgba(2, 132, 199, 0.3);
 
-      --text-main:      #0f172a;
-      --text-sub:       #334155;
-      --text-muted:     #64748b;
+      --text-main:       #0f172a;
+      --text-sub:        #334155;
+      --text-muted:      #64748b;
+      --text-inverse:    #ffffff;
 
-      --cyan:           #0284c7;
-      --blue:           #2563eb;
-      --purple:         #7c3aed;
-      --pink:           #db2777;
-      --emerald:        #059669;
-      --amber:          #d97706;
-      --rose:           #e11d48;
-
-      --shadow-3d:      0 20px 40px rgba(15, 23, 42, 0.08), 0 0 20px rgba(2, 132, 199, 0.12);
-      --shadow-neon:    0 0 20px rgba(2, 132, 199, 0.25);
+      --cyan:            #0284c7;
+      --blue:            #2563eb;
+      --purple:          #7c3aed;
+      --pink:            #db2777;
+      --emerald:         #059669;
+      --amber:           #d97706;
+      --rose:            #e11d48;
     }
-
-    body.light-theme .scanlines { opacity: 0.12; }
-    body.light-theme header.nav-header { background: rgba(255, 255, 255, 0.85); box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06); }
-    body.light-theme table.cyber-table th { background: rgba(241, 245, 249, 0.95); color: #334155; }
-    body.light-theme table.cyber-table tr { border-bottom-color: rgba(15, 23, 42, 0.06); }
-    body.light-theme table.cyber-table tbody tr:hover { background: rgba(2, 132, 199, 0.08); }
-    body.light-theme .brand-cube .face { background: rgba(2, 132, 199, 0.15); border-color: #0284c7; box-shadow: 0 0 15px rgba(2, 132, 199, 0.3); }
-    body.light-theme .search-box-3d input { background: rgba(255, 255, 255, 0.95); color: #0f172a; border-color: rgba(15, 23, 42, 0.15); }
-    body.light-theme .filter-tabs { background: rgba(241, 245, 249, 0.9); }
-    body.light-theme .modal-backdrop { background: rgba(241, 245, 249, 0.85); }
-    body.light-theme .cyber-core-container { background: radial-gradient(circle at center, rgba(2, 132, 199, 0.08) 0%, rgba(241, 245, 249, 0.9) 100%); }
-    body.light-theme .core-overlay-tag { background: rgba(255, 255, 255, 0.95); color: #0284c7; border-color: rgba(2, 132, 199, 0.3); }
-    body.light-theme .hero-mini-stat { background: rgba(255, 255, 255, 0.8); border-color: rgba(15, 23, 42, 0.1); }
-    body.light-theme .card-icon-wrapper { background: rgba(15, 23, 42, 0.04); border-color: rgba(15, 23, 42, 0.1); }
-    body.light-theme .btn-3d { background: linear-gradient(135deg, rgba(2, 132, 199, 0.12), rgba(124, 58, 237, 0.15)); border-color: #0284c7; color: #0f172a; }
 
     *, *::before, *::after {
       box-sizing: border-box;
@@ -97,40 +98,51 @@
       padding: 0;
     }
 
-    html, body {
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
       width: 100%;
-      height: 100%;
+      min-height: 100vh;
       overflow-x: hidden;
       background-color: var(--bg-deep);
       color: var(--text-main);
       font-family: var(--font-body);
-      line-height: 1.5;
+      font-size: 16px;
+      line-height: 1.6;
+      transition: background-color 0.4s ease, color 0.4s ease;
     }
 
-    /* ── 3D WebGL Background Canvas ── */
+    /* Accessibility Focus Outline */
+    :focus-visible {
+      outline: none;
+      box-shadow: var(--focus-ring);
+      border-radius: 6px;
+    }
+
+    /* ── WebGL Canvas Background ── */
     #webgl-bg {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
       z-index: 0;
       pointer-events: none;
     }
 
-    /* ── Scanline Effect Overlay ── */
     .scanlines {
       position: fixed;
       top: 0; left: 0; width: 100vw; height: 100vh;
-      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.02));
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.2) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.015), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.015));
       background-size: 100% 3px, 6px 100%;
       pointer-events: none;
       z-index: 1;
-      opacity: 0.6;
+      opacity: 0.5;
     }
 
-    /* ── Main App Layout ── */
-    .app-container {
+    body.light-theme .scanlines { opacity: 0.1; }
+
+    .app-wrapper {
       position: relative;
       z-index: 2;
       display: flex;
@@ -138,30 +150,34 @@
       min-height: 100vh;
     }
 
-    /* ── Header Navbar ── */
-    header.nav-header {
+    /* ==========================================================================
+       NAVIGATION & HEADER
+       ========================================================================== */
+    header.navbar {
       position: sticky;
       top: 0;
-      z-index: 100;
+      z-index: 1000;
+      background: var(--bg-glass-nav);
+      backdrop-filter: blur(20px) saturate(180%);
+      border-bottom: 1px solid var(--border-light);
+      padding: 0 32px;
+      height: 72px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 16px 36px;
-      background: rgba(4, 7, 17, 0.75);
-      backdrop-filter: blur(20px) saturate(180%);
-      border-bottom: 1px solid var(--border-light);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      transition: all 0.3s ease;
     }
 
-    .brand-section {
+    .nav-brand {
       display: flex;
       align-items: center;
-      gap: 16px;
+      gap: 14px;
+      text-decoration: none;
     }
 
     .brand-cube {
-      width: 44px;
-      height: 44px;
+      width: 36px;
+      height: 36px;
       position: relative;
       transform-style: preserve-3d;
       animation: rotateCube 12s infinite linear;
@@ -174,231 +190,485 @@
 
     .brand-cube .face {
       position: absolute;
-      width: 44px;
-      height: 44px;
+      width: 36px;
+      height: 36px;
       background: rgba(0, 240, 255, 0.15);
       border: 1.5px solid var(--cyan);
-      box-shadow: 0 0 15px var(--cyan);
+      box-shadow: 0 0 12px var(--cyan);
     }
-    .brand-cube .f-front  { transform: translateZ(22px); }
-    .brand-cube .f-back   { transform: rotateY(180deg) translateZ(22px); }
-    .brand-cube .f-right  { transform: rotateY(90deg) translateZ(22px); }
-    .brand-cube .f-left   { transform: rotateY(-90deg) translateZ(22px); }
-    .brand-cube .f-top    { transform: rotateX(90deg) translateZ(22px); }
-    .brand-cube .f-bottom { transform: rotateX(-90deg) translateZ(22px); }
+    .brand-cube .f-front  { transform: translateZ(18px); }
+    .brand-cube .f-back   { transform: rotateY(180deg) translateZ(18px); }
+    .brand-cube .f-right  { transform: rotateY(90deg) translateZ(18px); }
+    .brand-cube .f-left   { transform: rotateY(-90deg) translateZ(18px); }
+    .brand-cube .f-top    { transform: rotateX(90deg) translateZ(18px); }
+    .brand-cube .f-bottom { transform: rotateX(-90deg) translateZ(18px); }
 
-    .brand-title {
+    .brand-name {
       font-family: var(--font-heading);
       font-size: 20px;
-      font-weight: 800;
-      letter-spacing: 2px;
+      font-weight: 900;
+      letter-spacing: 1.5px;
       background: linear-gradient(90deg, #ffffff, var(--cyan), var(--purple));
       -webkit-background-clip: text;
       background-clip: text;
       -webkit-text-fill-color: transparent;
       text-transform: uppercase;
-      text-shadow: 0 0 20px rgba(0, 240, 255, 0.3);
     }
 
-    .brand-tag {
-      font-family: var(--font-mono);
-      font-size: 11px;
+    body.light-theme .brand-name {
+      background: linear-gradient(90deg, #0f172a, var(--cyan), var(--purple));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      list-style: none;
+    }
+
+    .nav-link {
+      color: var(--text-sub);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      transition: color 0.2s ease;
+    }
+
+    .nav-link:hover {
       color: var(--cyan);
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
     }
 
     .nav-actions {
       display: flex;
       align-items: center;
-      gap: 20px;
+      gap: 14px;
     }
 
-    .status-pill {
-      display: flex;
+    /* Buttons & Touch Targets (Min 44px) */
+    .btn-primary {
+      background: linear-gradient(135deg, var(--cyan), var(--blue));
+      color: #000;
+      font-family: var(--font-heading);
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      padding: 12px 24px;
+      min-height: 44px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      text-transform: uppercase;
+      text-decoration: none;
+      display: inline-flex;
       align-items: center;
-      gap: 10px;
-      padding: 8px 18px;
-      border-radius: 30px;
-      background: rgba(16, 185, 129, 0.1);
-      border: 1px solid rgba(16, 185, 129, 0.3);
-      color: var(--emerald);
-      font-family: var(--font-mono);
-      font-size: 12px;
-      font-weight: 600;
-      box-shadow: 0 0 15px rgba(16, 185, 129, 0.2);
+      justify-content: center;
+      gap: 8px;
+      box-shadow: var(--shadow-cta);
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 12px 35px rgba(0, 240, 255, 0.5);
+      color: #000;
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-light);
+      color: var(--text-main);
+      font-family: var(--font-heading);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      padding: 12px 24px;
+      min-height: 44px;
+      border-radius: 10px;
+      cursor: pointer;
+      text-transform: uppercase;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
       transition: all 0.3s ease;
     }
 
-    .status-pill.offline {
-      background: rgba(244, 63, 94, 0.1);
-      border-color: rgba(244, 63, 94, 0.4);
-      color: var(--rose);
-      box-shadow: 0 0 15px rgba(244, 63, 94, 0.2);
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: var(--cyan);
+      color: var(--cyan);
     }
 
-    .pulse-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background-color: currentColor;
-      box-shadow: 0 0 10px currentColor;
-      animation: pulseGlow 1.8s infinite ease-in-out;
-    }
-
-    @keyframes pulseGlow {
-      0%, 100% { transform: scale(1); opacity: 1; }
-      50% { transform: scale(1.4); opacity: 0.4; }
-    }
-
-    .btn-3d {
-      background: linear-gradient(135deg, rgba(0, 240, 255, 0.15), rgba(139, 92, 246, 0.2));
-      border: 1px solid var(--cyan);
+    .btn-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-light);
       color: var(--text-main);
-      padding: 8px 20px;
-      border-radius: 8px;
-      font-family: var(--font-heading);
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 1px;
-      cursor: pointer;
-      text-transform: uppercase;
-      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      box-shadow: 0 4px 15px rgba(0, 240, 255, 0.2), inset 0 0 10px rgba(0, 240, 255, 0.1);
       display: flex;
       align-items: center;
-      gap: 8px;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-size: 18px;
     }
 
-    .btn-3d:hover {
-      transform: translateY(-2px) scale(1.03);
-      box-shadow: 0 8px 25px rgba(0, 240, 255, 0.4), inset 0 0 15px rgba(0, 240, 255, 0.3);
-      border-color: #ffffff;
+    .btn-icon:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: var(--cyan);
     }
 
-    .btn-3d:active {
-      transform: translateY(1px);
+    /* Mobile Hamburger Menu */
+    .mobile-menu-btn {
+      display: none;
+      background: transparent;
+      border: none;
+      color: var(--text-main);
+      font-size: 24px;
+      cursor: pointer;
+      min-height: 44px;
+      min-width: 44px;
     }
 
-    /* ── Main Layout Body ── */
-    main.main-viewport {
-      padding: 32px 36px;
-      max-width: 1700px;
-      margin: 0 auto;
-      width: 100%;
+    .mobile-drawer {
+      position: fixed;
+      top: 72px; left: 0; right: 0;
+      background: var(--bg-surface);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border-light);
+      padding: 24px 32px;
       display: flex;
       flex-direction: column;
-      gap: 32px;
+      gap: 16px;
+      transform: translateY(-150%);
+      transition: transform 0.3s ease;
+      z-index: 999;
     }
 
-    /* ── Hero 3D Shield Banner ── */
-    .hero-banner {
-      display: grid;
-      grid-template-columns: 1fr 420px;
-      gap: 28px;
-      align-items: center;
-      background: var(--bg-surface);
-      border: 1px solid var(--border-light);
-      border-radius: 20px;
-      padding: 28px 36px;
-      backdrop-filter: blur(16px);
-      box-shadow: var(--shadow-3d);
+    .mobile-drawer.open {
+      transform: translateY(0);
+    }
+
+    @media (max-width: 900px) {
+      .nav-links { display: none; }
+      .mobile-menu-btn { display: flex; align-items: center; justify-content: center; }
+    }
+
+    /* ==========================================================================
+       STORYTELLING LANDING PAGE SECTIONS
+       ========================================================================== */
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 32px;
+      width: 100%;
+    }
+
+    section.page-section {
+      padding: 90px 0;
       position: relative;
-      overflow: hidden;
-      perspective: 1000px;
     }
 
-    .hero-banner::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0; height: 1px;
-      background: linear-gradient(90deg, transparent, var(--cyan), var(--purple), transparent);
-    }
-
-    .hero-text h1 {
-      font-family: var(--font-heading);
-      font-size: 32px;
-      font-weight: 900;
-      letter-spacing: 1px;
-      margin-bottom: 8px;
-      text-shadow: 0 0 30px rgba(0, 240, 255, 0.2);
-    }
-
-    .hero-text h1 span {
+    /* Section Typography Hierarchy */
+    .section-tag {
+      font-family: var(--font-mono);
+      font-size: 13px;
       color: var(--cyan);
-      position: relative;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      font-weight: 700;
+      margin-bottom: 12px;
+      display: inline-block;
     }
 
-    .hero-text p {
+    .section-heading {
+      font-family: var(--font-heading);
+      font-size: 36px;
+      font-weight: 900;
+      line-height: 1.2;
+      letter-spacing: -0.5px;
+      margin-bottom: 16px;
+    }
+
+    @media (max-width: 768px) {
+      .section-heading { font-size: 28px; }
+    }
+
+    .section-description {
+      font-size: 18px;
       color: var(--text-sub);
-      font-size: 14px;
-      max-width: 650px;
+      max-width: 680px;
       line-height: 1.6;
     }
 
-    .hero-metrics-strip {
+    /* ── Hero Section (Highest Conversion Clarity) ── */
+    .hero-section {
+      padding: 110px 0 80px 0;
+      display: grid;
+      grid-template-columns: 1fr 440px;
+      gap: 48px;
+      align-items: center;
+    }
+
+    @media (max-width: 1100px) {
+      .hero-section { grid-template-columns: 1fr; text-align: center; }
+      .hero-description { margin: 0 auto; }
+      .hero-cta-group { justify-content: center; }
+      .hero-metrics { justify-content: center; }
+    }
+
+    .hero-title {
+      font-family: var(--font-heading);
+      font-size: 56px;
+      font-weight: 900;
+      line-height: 1.1;
+      letter-spacing: -1px;
+      margin-bottom: 20px;
+    }
+
+    @media (max-width: 768px) {
+      .hero-title { font-size: 38px; }
+    }
+
+    .hero-title span {
+      background: linear-gradient(90deg, var(--cyan), var(--purple));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-description {
+      font-size: 20px;
+      color: var(--text-sub);
+      line-height: 1.6;
+      margin-bottom: 32px;
+      max-width: 640px;
+    }
+
+    .hero-cta-group {
       display: flex;
-      gap: 24px;
-      margin-top: 20px;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 36px;
     }
 
-    .hero-mini-stat {
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      padding: 10px 18px;
-      border-radius: 12px;
+    .hero-trust-strip {
       display: flex;
-      flex-direction: column;
-    }
-
-    .hero-mini-stat .lbl {
-      font-size: 10px;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      font-size: 13px;
+      color: var(--text-sub);
       font-family: var(--font-mono);
-      color: var(--text-muted);
-      text-transform: uppercase;
     }
 
-    .hero-mini-stat .val {
-      font-family: var(--font-mono);
-      font-size: 16px;
-      font-weight: 700;
-      color: var(--cyan);
+    .trust-badge-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
 
-    /* 3D Cyber Core Canvas Container */
-    .cyber-core-container {
-      width: 100%;
-      height: 220px;
+    .cyber-core-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-light);
+      border-radius: 24px;
+      padding: 24px;
+      backdrop-filter: blur(16px);
+      box-shadow: var(--shadow-card);
       position: relative;
-      border-radius: 16px;
       overflow: hidden;
+    }
+
+    .cyber-core-viewport {
+      width: 100%;
+      height: 280px;
+      border-radius: 16px;
+      background: radial-gradient(circle at center, rgba(0, 240, 255, 0.08) 0%, rgba(6, 9, 19, 0.9) 100%);
       border: 1px solid rgba(0, 240, 255, 0.2);
-      background: radial-gradient(circle at center, rgba(0, 240, 255, 0.05) 0%, rgba(4, 7, 17, 0.8) 100%);
-      box-shadow: inset 0 0 30px rgba(0, 240, 255, 0.1);
+      overflow: hidden;
+      position: relative;
     }
 
     #cyber-core-canvas {
       width: 100%;
       height: 100%;
-      display: block;
     }
 
-    .core-overlay-tag {
-      position: absolute;
-      bottom: 10px;
-      left: 14px;
+    /* ── Feature Cards Grid ── */
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 28px;
+    }
+
+    @media (max-width: 1024px) { .grid-3 { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 640px) { .grid-3 { grid-template-columns: 1fr; } }
+
+    .card-feature {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: 20px;
+      padding: 32px;
+      backdrop-filter: blur(12px);
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card-feature:hover {
+      transform: translateY(-6px);
+      border-color: var(--cyan);
+      box-shadow: var(--shadow-card);
+    }
+
+    .feature-icon-box {
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
+      background: rgba(0, 240, 255, 0.1);
+      border: 1px solid rgba(0, 240, 255, 0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+
+    .card-title {
+      font-family: var(--font-heading);
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .card-text {
+      font-size: 15px;
+      color: var(--text-sub);
+      line-height: 1.6;
+    }
+
+    /* ── How It Works Step Tracker ── */
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+      margin-top: 40px;
+    }
+
+    @media (max-width: 1024px) { .steps-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 600px) { .steps-grid { grid-template-columns: 1fr; } }
+
+    .step-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: 18px;
+      padding: 24px;
+      position: relative;
+    }
+
+    .step-number {
       font-family: var(--font-mono);
-      font-size: 10px;
+      font-size: 13px;
+      font-weight: 700;
       color: var(--cyan);
-      letter-spacing: 1px;
-      background: rgba(4, 7, 17, 0.7);
+      background: rgba(0, 240, 255, 0.1);
       padding: 4px 10px;
       border-radius: 6px;
-      border: 1px solid rgba(0, 240, 255, 0.3);
-      pointer-events: none;
+      display: inline-block;
+      margin-bottom: 14px;
     }
 
-    /* ── 3D Card Grid ── */
+    /* ── Architecture Visualizer ── */
+    .arch-container {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-light);
+      border-radius: 24px;
+      padding: 40px;
+      backdrop-filter: blur(16px);
+      box-shadow: var(--shadow-card);
+      margin-top: 32px;
+    }
+
+    .arch-layers {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+
+    @media (max-width: 900px) { .arch-layers { grid-template-columns: 1fr; } }
+
+    .arch-layer-box {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-light);
+      border-radius: 16px;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .arch-layer-title {
+      font-family: var(--font-heading);
+      font-size: 14px;
+      color: var(--cyan);
+      margin-bottom: 8px;
+    }
+
+    /* ── FAQ Accordion ── */
+    .faq-accordion {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      max-width: 900px;
+      margin: 32px auto 0 auto;
+    }
+
+    .faq-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: 14px;
+      overflow: hidden;
+      transition: border-color 0.2s ease;
+    }
+
+    .faq-button {
+      width: 100%;
+      text-align: left;
+      padding: 20px 24px;
+      background: transparent;
+      border: none;
+      color: var(--text-main);
+      font-family: var(--font-body);
+      font-size: 17px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 44px;
+    }
+
+    .faq-content {
+      padding: 0 24px 20px 24px;
+      color: var(--text-sub);
+      font-size: 15px;
+      display: none;
+    }
+
+    .faq-item.open .faq-content { display: block; }
+    .faq-item.open { border-color: var(--cyan); }
+
+    /* ==========================================================================
+       REAL-TIME 3D DASHBOARD MONITORING SECTION
+       ========================================================================== */
+    #dashboard-view {
+      scroll-margin-top: 80px;
+    }
+
     .grid-4 {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -406,65 +676,31 @@
       perspective: 1000px;
     }
 
-    @media (max-width: 1200px) { .grid-4 { grid-template-columns: repeat(2, 1fr); } }
-    @media (max-width: 640px) { .grid-4 { grid-template-columns: 1fr; } }
+    @media (max-width: 1100px) { .grid-4 { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 600px)  { .grid-4 { grid-template-columns: 1fr; } }
 
     .card-3d {
       background: var(--bg-card);
       border: 1px solid var(--border-light);
-      border-radius: 18px;
+      border-radius: 20px;
       padding: 24px;
-      position: relative;
       transform-style: preserve-3d;
       transition: transform 0.4s cubic-bezier(0.1, 0.8, 0.3, 1), border-color 0.3s ease, box-shadow 0.3s ease;
       backdrop-filter: blur(12px);
-      box-shadow: var(--shadow-3d);
+      box-shadow: var(--shadow-card);
       cursor: pointer;
-      overflow: hidden;
-    }
-
-    .card-3d::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      border-radius: 18px;
-      padding: 1px;
-      background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent 60%);
-      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-      -webkit-mask-composite: xor;
-      mask-composite: exclude;
-      pointer-events: none;
     }
 
     .card-3d:hover {
       transform: translateY(-8px) rotateX(4deg) rotateY(-4deg) translateZ(10px);
       border-color: var(--card-glow, var(--cyan));
-      box-shadow: 0 25px 50px rgba(0,0,0,0.7), 0 0 30px var(--card-glow-alpha, rgba(0, 240, 255, 0.25));
     }
 
     .card-header-flex {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 16px;
-    }
-
-    .card-icon-wrapper {
-      width: 48px;
-      height: 48px;
-      border-radius: 14px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 22px;
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      box-shadow: inset 0 0 15px rgba(255, 255, 255, 0.05);
-      transition: transform 0.3s ease;
-    }
-
-    .card-3d:hover .card-icon-wrapper {
-      transform: translateZ(20px) scale(1.1);
+      margin-bottom: 14px;
     }
 
     .card-label {
@@ -473,7 +709,7 @@
       color: var(--text-sub);
       text-transform: uppercase;
       letter-spacing: 1px;
-      font-weight: 500;
+      font-weight: 600;
     }
 
     .card-value {
@@ -481,52 +717,20 @@
       font-size: 36px;
       font-weight: 900;
       letter-spacing: -1px;
-      margin-top: 4px;
       line-height: 1;
-      transform: translateZ(15px);
-      transition: transform 0.3s ease;
     }
 
-    .card-subtext {
-      font-size: 12px;
-      color: var(--text-muted);
-      margin-top: 10px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    /* Card Themes */
-    .theme-total {
-      --card-glow: var(--cyan);
-      --card-glow-alpha: rgba(0, 240, 255, 0.3);
-    }
-    .theme-total .card-value { color: var(--cyan); text-shadow: 0 0 20px rgba(0, 240, 255, 0.4); }
-
-    .theme-malicious {
-      --card-glow: var(--rose);
-      --card-glow-alpha: rgba(244, 63, 94, 0.3);
-    }
-    .theme-malicious .card-value { color: var(--rose); text-shadow: 0 0 20px rgba(244, 63, 94, 0.4); }
-
-    .theme-suspicious {
-      --card-glow: var(--amber);
-      --card-glow-alpha: rgba(245, 158, 11, 0.3);
-    }
-    .theme-suspicious .card-value { color: var(--amber); text-shadow: 0 0 20px rgba(245, 158, 11, 0.4); }
-
-    .theme-clean {
-      --card-glow: var(--emerald);
-      --card-glow-alpha: rgba(16, 185, 129, 0.3);
-    }
-    .theme-clean .card-value { color: var(--emerald); text-shadow: 0 0 20px rgba(16, 185, 129, 0.4); }
+    .theme-total .card-value { color: var(--cyan); }
+    .theme-malicious .card-value { color: var(--rose); }
+    .theme-suspicious .card-value { color: var(--amber); }
+    .theme-clean .card-value { color: var(--emerald); }
 
     /* ── Middle Visual Charts Grid ── */
     .grid-charts {
       display: grid;
       grid-template-columns: 1fr 1fr 1.2fr;
       gap: 24px;
-      perspective: 1000px;
+      margin-top: 28px;
     }
 
     @media (max-width: 1300px) { .grid-charts { grid-template-columns: 1fr; } }
@@ -537,16 +741,10 @@
       border-radius: 20px;
       padding: 24px;
       backdrop-filter: blur(16px);
-      box-shadow: var(--shadow-3d);
+      box-shadow: var(--shadow-card);
       display: flex;
       flex-direction: column;
-      transform-style: preserve-3d;
-      transition: transform 0.4s ease, border-color 0.3s ease;
       position: relative;
-    }
-
-    .chart-panel-3d:hover {
-      border-color: var(--border-glow);
     }
 
     .panel-title {
@@ -559,7 +757,6 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      color: var(--text-main);
     }
 
     .panel-title-badge {
@@ -579,18 +776,15 @@
       min-height: 240px;
     }
 
-    /* ── Email Stream Table Section ── */
+    /* ── Live Interception Table Section ── */
     .table-panel-3d {
       background: var(--bg-card);
       border: 1px solid var(--border-light);
       border-radius: 20px;
       padding: 28px;
       backdrop-filter: blur(16px);
-      box-shadow: var(--shadow-3d);
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-      perspective: 1000px;
+      box-shadow: var(--shadow-card);
+      margin-top: 28px;
     }
 
     .table-toolbar {
@@ -599,48 +793,40 @@
       justify-content: space-between;
       flex-wrap: wrap;
       gap: 16px;
+      margin-bottom: 20px;
     }
 
-    .search-box-3d {
+    .search-box {
       position: relative;
-      min-width: 300px;
+      min-width: 280px;
     }
 
-    .search-box-3d input {
+    .search-box input {
       width: 100%;
-      background: rgba(4, 7, 17, 0.6);
+      background: rgba(6, 9, 19, 0.6);
       border: 1px solid var(--border-light);
-      padding: 10px 16px 10px 40px;
+      padding: 10px 16px 10px 38px;
       border-radius: 10px;
       color: var(--text-main);
       font-family: var(--font-body);
-      font-size: 13px;
-      outline: none;
-      transition: all 0.3s ease;
-    }
-
-    .search-box-3d input:focus {
-      border-color: var(--cyan);
-      box-shadow: 0 0 15px rgba(0, 240, 255, 0.25);
-    }
-
-    .search-icon {
-      position: absolute;
-      left: 14px;
-      top: 50%;
-      transform: translateY(-50%);
       font-size: 14px;
-      color: var(--text-muted);
+    }
+
+    body.light-theme .search-box input {
+      background: rgba(255, 255, 255, 0.9);
+      color: #0f172a;
     }
 
     .filter-tabs {
       display: flex;
-      gap: 8px;
-      background: rgba(4, 7, 17, 0.5);
+      gap: 6px;
+      background: rgba(6, 9, 19, 0.5);
       padding: 4px;
       border-radius: 10px;
       border: 1px solid var(--border-light);
     }
+
+    body.light-theme .filter-tabs { background: rgba(241, 245, 249, 0.9); }
 
     .tab-btn {
       background: transparent;
@@ -649,9 +835,9 @@
       padding: 6px 14px;
       border-radius: 6px;
       font-family: var(--font-mono);
-      font-size: 11px;
+      font-size: 12px;
       cursor: pointer;
-      transition: all 0.2s ease;
+      min-height: 36px;
     }
 
     .tab-btn.active, .tab-btn:hover {
@@ -660,67 +846,44 @@
       border: 1px solid rgba(0, 240, 255, 0.3);
     }
 
-    /* Table styling */
     .table-wrapper {
       overflow-x: auto;
       border-radius: 12px;
-      border: 1px solid rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border-light);
     }
 
     table.cyber-table {
       width: 100%;
       border-collapse: collapse;
       text-align: left;
-      font-size: 13px;
+      font-size: 14px;
     }
 
     table.cyber-table th {
-      background: rgba(10, 16, 30, 0.9);
+      background: rgba(13, 20, 36, 0.9);
       padding: 14px 18px;
       font-family: var(--font-heading);
-      font-size: 10px;
+      font-size: 11px;
       letter-spacing: 1px;
       color: var(--text-sub);
       text-transform: uppercase;
       border-bottom: 1px solid var(--border-light);
     }
 
-    table.cyber-table tr {
-      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-      transition: all 0.2s ease;
-    }
-
-    table.cyber-table tbody tr:hover {
-      background: rgba(0, 240, 255, 0.05);
-      transform: scale(1.002);
-    }
+    body.light-theme table.cyber-table th { background: rgba(241, 245, 249, 0.95); }
 
     table.cyber-table td {
       padding: 14px 18px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
       vertical-align: middle;
     }
 
-    .sender-cell {
-      display: flex;
-      flex-direction: column;
-    }
-    .sender-name { font-weight: 600; color: var(--text-main); }
-    .sender-email { font-family: var(--font-mono); font-size: 11px; color: var(--text-muted); }
-
-    .subject-text {
-      font-weight: 500;
-      color: var(--text-sub);
-      max-width: 320px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
+    body.light-theme table.cyber-table td { border-bottom-color: rgba(15, 23, 42, 0.06); }
 
     /* Badges */
     .risk-badge {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
       padding: 4px 12px;
       border-radius: 20px;
       font-family: var(--font-mono);
@@ -731,40 +894,16 @@
 
     .badge-low { background: rgba(16, 185, 129, 0.15); color: var(--emerald); border: 1px solid rgba(16, 185, 129, 0.3); }
     .badge-medium { background: rgba(245, 158, 11, 0.15); color: var(--amber); border: 1px solid rgba(245, 158, 11, 0.3); }
-    .badge-high { background: rgba(249, 115, 22, 0.15); color: var(--risk-high); border: 1px solid rgba(249, 115, 22, 0.3); }
-    .badge-critical { background: rgba(244, 63, 94, 0.15); color: var(--rose); border: 1px solid rgba(244, 63, 94, 0.4); box-shadow: 0 0 10px rgba(244, 63, 94, 0.3); }
+    .badge-high { background: rgba(249, 115, 22, 0.15); color: var(--rose); border: 1px solid rgba(249, 115, 22, 0.3); }
+    .badge-critical { background: rgba(244, 63, 94, 0.15); color: var(--rose); border: 1px solid rgba(244, 63, 94, 0.4); }
 
-    .score-meter {
-      font-family: var(--font-mono);
-      font-weight: 700;
-      font-size: 12px;
-    }
-
-    .inspect-btn {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--border-light);
-      color: var(--text-sub);
-      padding: 5px 12px;
-      border-radius: 6px;
-      font-size: 11px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-
-    .inspect-btn:hover {
-      background: var(--cyan);
-      color: #000;
-      font-weight: 700;
-      box-shadow: 0 0 12px var(--cyan);
-    }
-
-    /* ── 3D Modal ── */
+    /* ── Inspection Modal ── */
     .modal-backdrop {
       position: fixed;
       inset: 0;
-      background: rgba(4, 7, 17, 0.85);
+      background: rgba(6, 9, 19, 0.85);
       backdrop-filter: blur(12px);
-      z-index: 1000;
+      z-index: 2000;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -774,104 +913,50 @@
       transition: opacity 0.3s ease;
     }
 
-    .modal-backdrop.open {
-      opacity: 1;
-      pointer-events: auto;
-    }
+    .modal-backdrop.open { opacity: 1; pointer-events: auto; }
 
-    .modal-card-3d {
+    .modal-card {
       background: var(--bg-surface);
       border: 1px solid var(--cyan);
       box-shadow: 0 30px 80px rgba(0, 0, 0, 0.9), 0 0 40px rgba(0, 240, 255, 0.3);
       border-radius: 24px;
       width: 100%;
-      max-width: 750px;
-      max-height: 90vh;
-      overflow-y: auto;
+      max-width: 720px;
       padding: 32px;
-      transform: scale(0.8) rotateX(15deg);
-      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      transform: scale(0.85);
+      transition: transform 0.3s ease;
     }
 
-    .modal-backdrop.open .modal-card-3d {
-      transform: scale(1) rotateX(0deg);
-    }
-
-    .modal-header {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      border-bottom: 1px solid var(--border-light);
-      padding-bottom: 16px;
-      margin-bottom: 20px;
-    }
-
-    .modal-title {
-      font-family: var(--font-heading);
-      font-size: 18px;
-      color: var(--cyan);
-    }
-
-    .modal-close {
-      background: transparent;
-      border: none;
-      color: var(--text-sub);
-      font-size: 24px;
-      cursor: pointer;
-    }
-
-    .detail-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 16px;
-      margin-bottom: 20px;
-    }
-
-    .detail-box {
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(255, 255, 255, 0.07);
-      padding: 12px 16px;
-      border-radius: 10px;
-    }
-
-    .detail-box .lbl { font-size: 10px; font-family: var(--font-mono); color: var(--text-muted); text-transform: uppercase; }
-    .detail-box .val { font-size: 14px; font-weight: 600; color: var(--text-main); margin-top: 4px; }
-
-    .rule-tag {
-      display: inline-block;
-      background: rgba(236, 72, 153, 0.15);
-      border: 1px solid rgba(236, 72, 153, 0.3);
-      color: var(--pink);
-      padding: 4px 10px;
-      border-radius: 6px;
-      font-family: var(--font-mono);
-      font-size: 11px;
-      margin: 4px 4px 0 0;
-    }
+    .modal-backdrop.open .modal-card { transform: scale(1); }
 
     /* ── Footer ── */
-    footer.cyber-footer {
-      text-align: center;
-      padding: 24px;
-      color: var(--text-muted);
-      font-family: var(--font-mono);
-      font-size: 11px;
-      border-top: 1px solid rgba(255, 255, 255, 0.05);
+    footer.page-footer {
+      border-top: 1px solid var(--border-light);
+      padding: 48px 0;
+      background: var(--bg-glass-nav);
       margin-top: auto;
+    }
+
+    .footer-flex {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 20px;
     }
   </style>
 </head>
 <body>
 
-  <!-- WebGL Background Canvas -->
+  <!-- WebGL Background Canvas & Scanlines -->
   <canvas id="webgl-bg"></canvas>
   <div class="scanlines"></div>
 
-  <div class="app-container">
-    
-    <!-- Navigation Header -->
-    <header class="nav-header">
-      <div class="brand-section">
+  <div class="app-wrapper">
+
+    <!-- Sticky Navigation Bar -->
+    <header class="navbar">
+      <a href="#hero" class="nav-brand">
         <div class="brand-cube">
           <div class="face f-front"></div>
           <div class="face f-back"></div>
@@ -880,243 +965,467 @@
           <div class="face f-top"></div>
           <div class="face f-bottom"></div>
         </div>
-        <div>
-          <div class="brand-title">Syntra AI</div>
-          <div class="brand-tag">3D Cyber Mail Shield v2.4</div>
-        </div>
-      </div>
+        <span class="brand-name">Syntra AI</span>
+      </a>
+
+      <nav aria-label="Main Navigation">
+        <ul class="nav-links">
+          <li><a href="#hero" class="nav-link">Home</a></li>
+          <li><a href="#features" class="nav-link">Features</a></li>
+          <li><a href="#workflow" class="nav-link">Workflow</a></li>
+          <li><a href="#architecture" class="nav-link">Architecture</a></li>
+          <li><a href="#dashboard-view" class="nav-link">Live Dashboard</a></li>
+          <li><a href="#security" class="nav-link">Security</a></li>
+          <li><a href="#faq" class="nav-link">FAQ</a></li>
+        </ul>
+      </nav>
 
       <div class="nav-actions">
-        <button class="btn-3d" id="btn-theme-toggle" onclick="toggleTheme()" style="gap:6px;">
-          <span id="theme-icon">☀️</span> <span id="theme-label">Light Mode</span>
+        <button class="btn-icon" id="btn-theme-toggle" onclick="toggleTheme()" title="Toggle Theme" aria-label="Toggle Light/Dark Theme">
+          <span id="theme-icon">☀️</span>
         </button>
 
-        <div id="health-badge" class="status-pill">
-          <span class="pulse-dot"></span>
-          <span id="health-text">SYSTEM ONLINE</span>
-        </div>
+        <a href="#dashboard-view" class="btn-primary">
+          Dashboard →
+        </a>
 
-        <button class="btn-3d" id="btn-refresh" onclick="fetchDashboardData()">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-            <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/>
-          </svg>
-          Sync Matrix
+        <button class="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Toggle Navigation Menu">
+          ☰
         </button>
       </div>
     </header>
 
-    <!-- Main Content Viewport -->
-    <main class="main-viewport">
+    <!-- Mobile Slide-out Drawer -->
+    <div class="mobile-drawer" id="mobile-drawer">
+      <a href="#hero" class="nav-link" onclick="toggleMobileMenu()">Home</a>
+      <a href="#features" class="nav-link" onclick="toggleMobileMenu()">Features</a>
+      <a href="#workflow" class="nav-link" onclick="toggleMobileMenu()">Workflow</a>
+      <a href="#architecture" class="nav-link" onclick="toggleMobileMenu()">Architecture</a>
+      <a href="#dashboard-view" class="nav-link" onclick="toggleMobileMenu()">Live Dashboard</a>
+      <a href="#security" class="nav-link" onclick="toggleMobileMenu()">Security</a>
+      <a href="#faq" class="nav-link" onclick="toggleMobileMenu()">FAQ</a>
+    </div>
 
-      <!-- Hero Banner & Cyber Core 3D Model -->
-      <section class="hero-banner">
-        <div class="hero-text">
-          <h1>Syntra <span>Autonomous</span> Security Core</h1>
-          <p>Real-time threat interception, neural risk evaluation, and automated multi-channel notification engine powered by Groq & OpenRouter LLMs.</p>
-          
-          <div class="hero-metrics-strip">
-            <div class="hero-mini-stat">
-              <span class="lbl">Agent Uptime</span>
-              <span class="val" id="val-uptime">0s</span>
-            </div>
-            <div class="hero-mini-stat">
-              <span class="lbl">LLM Engine</span>
-              <span class="val" style="color: var(--purple);">Groq LLaMA 3</span>
-            </div>
-            <div class="hero-mini-stat">
-              <span class="lbl">Last Refresh</span>
-              <span class="val" id="val-last-update" style="color: var(--text-sub);">—</span>
-            </div>
+    <main>
+
+      <!-- ====================================================================
+           1. HERO SECTION (HIGH CONVERSION CLARITY)
+           ==================================================================== -->
+      <section id="hero" class="container hero-section">
+        <div>
+          <span class="section-tag">⚡ Autonomous Mail Security Engine</span>
+          <h1 class="hero-title">
+            Stop Email Attacks Before They Reach Your <span>Inbox</span>
+          </h1>
+          <p class="hero-description">
+            Syntra AI combines dual LLM verification (Groq LLaMA 3 + OpenRouter), OCR attachment analysis, and multi-channel instant alerts to stop phishing and spoofing automatically.
+          </p>
+
+          <div class="hero-cta-group">
+            <a href="#dashboard-view" class="btn-primary">
+              Launch 3D Dashboard →
+            </a>
+            <a href="https://github.com/paidisettilokesh/Syntra-ai" target="_blank" rel="noopener" class="btn-secondary">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+              GitHub Repository
+            </a>
+          </div>
+
+          <div class="hero-trust-strip">
+            <div class="trust-badge-item">🛡️ <span>Multi-Account Gmail</span></div>
+            <div class="trust-badge-item">🤖 <span>Groq AI Pipeline</span></div>
+            <div class="trust-badge-item">🔔 <span>Telegram Alerts</span></div>
+            <div class="trust-badge-item">✅ <span>80+ Unit Tests</span></div>
           </div>
         </div>
 
-        <div class="cyber-core-container">
-          <canvas id="cyber-core-canvas"></canvas>
-          <div class="core-overlay-tag">⚡ 3D THREAT SHIELD RUNNING</div>
-        </div>
-      </section>
-
-      <!-- 4 KPI Cards with 3D Tilt Effects -->
-      <section class="grid-4">
-        <div class="card-3d theme-total" data-tilt>
-          <div class="card-header-flex">
-            <span class="card-label">Total Processed</span>
-            <div class="card-icon-wrapper">📧</div>
+        <div class="cyber-core-card">
+          <div class="cyber-core-viewport">
+            <canvas id="cyber-core-canvas"></canvas>
           </div>
-          <div class="card-value" id="stat-total">0</div>
-          <div class="card-subtext">Cumulative Email Volume</div>
-        </div>
-
-        <div class="card-3d theme-malicious" data-tilt>
-          <div class="card-header-flex">
-            <span class="card-label">Threats Blocked</span>
-            <div class="card-icon-wrapper">🚫</div>
-          </div>
-          <div class="card-value" id="stat-malicious">0</div>
-          <div class="card-subtext">High/Critical Malicious Interceptions</div>
-        </div>
-
-        <div class="card-3d theme-suspicious" data-tilt>
-          <div class="card-header-flex">
-            <span class="card-label">Suspicious Flagged</span>
-            <div class="card-icon-wrapper">⚠️</div>
-          </div>
-          <div class="card-value" id="stat-suspicious">0</div>
-          <div class="card-subtext">Requires Review & Rule Check</div>
-        </div>
-
-        <div class="card-3d theme-clean" data-tilt>
-          <div class="card-header-flex">
-            <span class="card-label">Clean Emails</span>
-            <div class="card-icon-wrapper">🛡️</div>
-          </div>
-          <div class="card-value" id="stat-clean">0</div>
-          <div class="card-subtext">Verified Legitimate Deliveries</div>
-        </div>
-      </section>
-
-      <!-- 3D Charts Grid -->
-      <section class="grid-charts">
-        <div class="chart-panel-3d">
-          <div class="panel-title">
-            <span>Risk Spectrum</span>
-            <span class="panel-title-badge">Security Audit</span>
-          </div>
-          <div class="chart-box">
-            <canvas id="chart-risk"></canvas>
-          </div>
-        </div>
-
-        <div class="chart-panel-3d">
-          <div class="panel-title">
-            <span>AI Classification</span>
-            <span class="panel-title-badge">Category Mix</span>
-          </div>
-          <div class="chart-box">
-            <canvas id="chart-category"></canvas>
-          </div>
-        </div>
-
-        <div class="chart-panel-3d">
-          <div class="panel-title">
-            <span>Processing Timeline</span>
-            <span class="panel-title-badge">24h Velocity</span>
-          </div>
-          <div class="chart-box">
-            <canvas id="chart-timeline"></canvas>
+          <div style="margin-top: 16px; display: flex; align-items: center; justify-content: space-between; font-family: var(--font-mono); font-size: 12px;">
+            <span style="color: var(--cyan);">⚡ 3D SECURITY SHIELD</span>
+            <span style="color: var(--emerald);" id="hero-status-tag">ONLINE</span>
           </div>
         </div>
       </section>
 
-      <!-- Live Stream Email Table Panel -->
-      <section class="table-panel-3d">
-        <div class="table-toolbar">
+      <!-- ====================================================================
+           2. PROBLEM & SOLUTION SECTION
+           ==================================================================== -->
+      <section id="features" class="page-section container">
+        <span class="section-tag">Core Capabilities</span>
+        <h2 class="section-heading">Why Traditional Email Filters Fail</h2>
+        <p class="section-description">
+          Modern phishing bypasses static spam filters using generative language techniques and encrypted attachments. Syntra AI protects your organization in real time.
+        </p>
+
+        <div class="grid-3" style="margin-top: 40px;">
+          <div class="card-feature">
+            <div class="feature-icon-box">🧠</div>
+            <h3 class="card-title">Dual LLM Pipeline</h3>
+            <p class="card-text">Primary threat verification powered by Groq LLaMA 3 with automatic instant failover to OpenRouter for 100% uptime.</p>
+          </div>
+
+          <div class="card-feature">
+            <div class="feature-icon-box">🔎</div>
+            <h3 class="card-title">OCR Attachment Inspection</h3>
+            <p class="card-text">Extracts text and inspects images, PDF documents, and DOCX files for embedded malicious links and hidden phishing code.</p>
+          </div>
+
+          <div class="card-feature">
+            <div class="feature-icon-box">⚡</div>
+            <h3 class="card-title">Multi-Channel Alerts</h3>
+            <p class="card-text">Instantly dispatches suspicious risk escalation notifications directly to Telegram and WhatsApp channels.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====================================================================
+           3. HOW IT WORKS (WORKFLOW PIPELINE)
+           ==================================================================== -->
+      <section id="workflow" class="page-section container">
+        <span class="section-tag">Autonomous Workflow</span>
+        <h2 class="section-heading">How Syntra AI Protects Inboxes</h2>
+        <p class="section-description">A seamless 4-stage pipeline that monitors, verifies, and intercepts threats automatically.</p>
+
+        <div class="steps-grid">
+          <div class="step-card">
+            <span class="step-number">STEP 01</span>
+            <h4 style="font-size: 18px; margin-bottom: 8px;">Multi-Account Fetch</h4>
+            <p style="font-size: 14px; color: var(--text-sub);">Fetches unread emails from configured Gmail OAuth/IMAP mailboxes on a background schedule.</p>
+          </div>
+
+          <div class="step-card">
+            <span class="step-number">STEP 02</span>
+            <h4 style="font-size: 18px; margin-bottom: 8px;">Rule & Domain Check</h4>
+            <p style="font-size: 14px; color: var(--text-sub);">Evaluates trusted domain JSON allowlists, sender reputation, and SPF/DKIM verification rules.</p>
+          </div>
+
+          <div class="step-card">
+            <span class="step-number">STEP 03</span>
+            <h4 style="font-size: 18px; margin-bottom: 8px;">AI Classification</h4>
+            <p style="font-size: 14px; color: var(--text-sub);">LLM categorizes email urgency, calculates numerical risk score (0-100), and flags threat vectors.</p>
+          </div>
+
+          <div class="step-card">
+            <span class="step-number">STEP 04</span>
+            <h4 style="font-size: 18px; margin-bottom: 8px;">Instant Dispatch</h4>
+            <p style="font-size: 14px; color: var(--text-sub);">Escalates suspicious emails to Telegram/WhatsApp and updates the 3D Telemetry Dashboard.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====================================================================
+           4. CLEAN ARCHITECTURE SECTION
+           ==================================================================== -->
+      <section id="architecture" class="page-section container">
+        <span class="section-tag">Enterprise Architecture</span>
+        <h2 class="section-heading">Built On Clean Software Architecture</h2>
+        <p class="section-description">Decoupled layers ensuring reliable scalability, security isolation, and easy testability.</p>
+
+        <div class="arch-container">
+          <div class="arch-layers">
+            <div class="arch-layer-box">
+              <div class="arch-layer-title">Domain Layer</div>
+              <p style="font-size: 13px; color: var(--text-sub);">Entities, Interfaces, & Risk Enums</p>
+            </div>
+            <div class="arch-layer-box">
+              <div class="arch-layer-title">Application Layer</div>
+              <p style="font-size: 13px; color: var(--text-sub);">Email Orchestrator & Rule Verifier</p>
+            </div>
+            <div class="arch-layer-box">
+              <div class="arch-layer-title">Infrastructure Layer</div>
+              <p style="font-size: 13px; color: var(--text-sub);">Groq LLM, SQLite Repo & Clients</p>
+            </div>
+            <div class="arch-layer-box">
+              <div class="arch-layer-title">Presentation Layer</div>
+              <p style="font-size: 13px; color: var(--text-sub);">3D Telemetry Web Dashboard</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====================================================================
+           5. REAL-TIME 3D TELEMETRY DASHBOARD SECTION
+           ==================================================================== -->
+      <section id="dashboard-view" class="page-section container">
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; margin-bottom: 32px;">
           <div>
-            <h2 style="font-family: var(--font-heading); font-size: 16px; letter-spacing: 1px;">Live Interception Feed</h2>
-            <p style="font-size: 12px; color: var(--text-sub);">Real-time stream of incoming emails processed by Syntra AI</p>
+            <span class="section-tag">Live Operations</span>
+            <h2 class="section-heading">Security Telemetry Command Center</h2>
           </div>
 
-          <div style="display: flex; gap: 16px; align-items: center; flex-wrap: wrap;">
-            <div class="search-box-3d">
-              <span class="search-icon">🔍</span>
-              <input type="text" id="search-input" placeholder="Search subject, sender, category..." oninput="renderTable()" />
+          <div style="display: flex; align-items: center; gap: 14px;">
+            <div id="health-badge" style="display: flex; align-items: center; gap: 8px; font-family: var(--font-mono); font-size: 13px; color: var(--emerald);">
+              <span style="width: 8px; height: 8px; border-radius: 50%; background: currentColor; box-shadow: 0 0 10px currentColor;"></span>
+              <span id="health-text">SYSTEM ONLINE</span>
             </div>
+            <button class="btn-secondary" id="btn-refresh" onclick="fetchDashboardData()" style="min-height: 40px; padding: 6px 16px;">
+              Sync Telemetry
+            </button>
+          </div>
+        </div>
 
-            <div class="filter-tabs">
-              <button class="tab-btn active" onclick="setFilter('all', this)">All</button>
-              <button class="tab-btn" onclick="setFilter('high', this)">Critical/High</button>
-              <button class="tab-btn" onclick="setFilter('suspicious', this)">Suspicious</button>
-              <button class="tab-btn" onclick="setFilter('clean', this)">Clean</button>
+        <!-- 4 KPI Cards -->
+        <div class="grid-4">
+          <div class="card-3d theme-total">
+            <div class="card-header-flex">
+              <span class="card-label">Total Processed</span>
+              <span style="font-size: 20px;">📧</span>
+            </div>
+            <div class="card-value" id="stat-total">0</div>
+            <p style="font-size: 12px; color: var(--text-sub); margin-top: 8px;">Cumulative Email Volume</p>
+          </div>
+
+          <div class="card-3d theme-malicious">
+            <div class="card-header-flex">
+              <span class="card-label">Threats Blocked</span>
+              <span style="font-size: 20px;">🚫</span>
+            </div>
+            <div class="card-value" id="stat-malicious">0</div>
+            <p style="font-size: 12px; color: var(--text-sub); margin-top: 8px;">High & Critical Escalations</p>
+          </div>
+
+          <div class="card-3d theme-suspicious">
+            <div class="card-header-flex">
+              <span class="card-label">Suspicious Flagged</span>
+              <span style="font-size: 20px;">⚠️</span>
+            </div>
+            <div class="card-value" id="stat-suspicious">0</div>
+            <p style="font-size: 12px; color: var(--text-sub); margin-top: 8px;">Medium Risk Inspections</p>
+          </div>
+
+          <div class="card-3d theme-clean">
+            <div class="card-header-flex">
+              <span class="card-label">Clean Emails</span>
+              <span style="font-size: 20px;">🛡️</span>
+            </div>
+            <div class="card-value" id="stat-clean">0</div>
+            <p style="font-size: 12px; color: var(--text-sub); margin-top: 8px;">Verified Low Risk Deliveries</p>
+          </div>
+        </div>
+
+        <!-- Charts Grid -->
+        <div class="grid-charts">
+          <div class="chart-panel-3d">
+            <div class="panel-title">
+              <span>Risk Spectrum</span>
+              <span class="panel-title-badge">Security Audit</span>
+            </div>
+            <div class="chart-box">
+              <canvas id="chart-risk"></canvas>
+            </div>
+          </div>
+
+          <div class="chart-panel-3d">
+            <div class="panel-title">
+              <span>AI Classification</span>
+              <span class="panel-title-badge">Category Breakdown</span>
+            </div>
+            <div class="chart-box">
+              <canvas id="chart-category"></canvas>
+            </div>
+          </div>
+
+          <div class="chart-panel-3d">
+            <div class="panel-title">
+              <span>Processing Velocity</span>
+              <span class="panel-title-badge">24h Timeline</span>
+            </div>
+            <div class="chart-box">
+              <canvas id="chart-timeline"></canvas>
             </div>
           </div>
         </div>
 
-        <div class="table-wrapper">
-          <table class="cyber-table">
-            <thead>
-              <tr>
-                <th>Sender</th>
-                <th>Subject</th>
-                <th>Category</th>
-                <th>Risk Level</th>
-                <th>Risk Score</th>
-                <th>Status</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody id="email-tbody">
-              <tr>
-                <td colspan="7" style="text-align: center; padding: 40px; color: var(--text-muted);">
-                  Connecting to Syntra Telemetry Engine...
-                </td>
-              </tr>
-            </tbody>
-          </table>
+        <!-- Email Stream Table -->
+        <div class="table-panel-3d">
+          <div class="table-toolbar">
+            <div>
+              <h3 style="font-family: var(--font-heading); font-size: 18px;">Live Email Interception Stream</h3>
+              <p style="font-size: 13px; color: var(--text-sub);">Real-time stream of incoming emails processed by Syntra AI</p>
+            </div>
+
+            <div style="display: flex; gap: 16px; align-items: center; flex-wrap: wrap;">
+              <div class="search-box">
+                <input type="text" id="search-input" placeholder="Search sender, subject..." oninput="renderTable()" aria-label="Search emails" />
+              </div>
+
+              <div class="filter-tabs">
+                <button class="tab-btn active" onclick="setFilter('all', this)">All</button>
+                <button class="tab-btn" onclick="setFilter('high', this)">High/Critical</button>
+                <button class="tab-btn" onclick="setFilter('suspicious', this)">Suspicious</button>
+                <button class="tab-btn" onclick="setFilter('clean', this)">Clean</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="table-wrapper">
+            <table class="cyber-table">
+              <thead>
+                <tr>
+                  <th>Sender</th>
+                  <th>Subject</th>
+                  <th>Category</th>
+                  <th>Risk Level</th>
+                  <th>Risk Score</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="email-tbody">
+                <tr>
+                  <td colspan="7" style="text-align: center; padding: 40px; color: var(--text-muted);">
+                    Connecting to Syntra Telemetry Engine...
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====================================================================
+           6. SECURITY & TRUST SECTION
+           ==================================================================== -->
+      <section id="security" class="page-section container">
+        <span class="section-tag">Enterprise Hardening</span>
+        <h2 class="section-heading">Security First Principles</h2>
+        <p class="section-description">Engineered to protect organizational data privacy while maintaining high-speed threat mitigation.</p>
+
+        <div class="grid-3" style="margin-top: 40px;">
+          <div class="card-feature">
+            <h3 class="card-title">Zero Data Retention</h3>
+            <p class="card-text">Email body contents are processed transiently in memory for risk evaluation and never stored permanently in plain text.</p>
+          </div>
+          <div class="card-feature">
+            <h3 class="card-title">Fallback LLM Security</h3>
+            <p class="card-text">If Groq rate limits occur, OpenRouter takes over seamlessly without dropping email verification integrity.</p>
+          </div>
+          <div class="card-feature">
+            <h3 class="card-title">Automated Rule Engine</h3>
+            <p class="card-text">Trusted domain lists and score thresholds prevent false positives for internal organizational communications.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====================================================================
+           7. FREQUENTLY ASKED QUESTIONS (FAQ)
+           ==================================================================== -->
+      <section id="faq" class="page-section container">
+        <div style="text-align: center;">
+          <span class="section-tag">Got Questions?</span>
+          <h2 class="section-heading">Frequently Asked Questions</h2>
+        </div>
+
+        <div class="faq-accordion">
+          <div class="faq-item">
+            <button class="faq-button" onclick="toggleFaq(this)">
+              <span>How does Syntra AI connect to my Gmail accounts?</span>
+              <span>+</span>
+            </button>
+            <div class="faq-content">
+              Syntra AI uses standard Google OAuth 2.0 or App Passwords configured securely in your environment variables (`EMAIL_USERS` and `EMAIL_PASSWORDS`). It supports multiple accounts simultaneously.
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-button" onclick="toggleFaq(this)">
+              <span>What happens when a high-risk email is detected?</span>
+              <span>+</span>
+            </button>
+            <div class="faq-content">
+              When risk score exceeds confidence thresholds, Syntra AI flags the verification status as Suspicious, blocks immediate processing, and dispatches an alert with summary diagnostics to your Telegram or WhatsApp bot.
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-button" onclick="toggleFaq(this)">
+              <span>Can I run Syntra AI for free 24/7 in the cloud?</span>
+              <span>+</span>
+            </button>
+            <div class="faq-content">
+              Yes! You can deploy Syntra AI on Render's free tier and use UptimeRobot to ping the `/health` endpoint every 5 minutes to keep it awake 24/7 for $0/month.
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-button" onclick="toggleFaq(this)">
+              <span>Is my email data kept private?</span>
+              <span>+</span>
+            </button>
+            <div class="faq-content">
+              Yes. Syntra AI runs entirely inside your own private Docker container or server. Only metadata and risk calculations are saved to SQLite (`agent_logs.db`).
+            </div>
+          </div>
         </div>
       </section>
 
     </main>
 
     <!-- Footer -->
-    <footer class="cyber-footer">
-      Syntra AI Security Agent &copy; 2026. Fully 3D Interactive Cyber Platform. All Rights Reserved.
+    <footer class="page-footer">
+      <div class="container footer-flex">
+        <div style="font-family: var(--font-mono); font-size: 13px; color: var(--text-sub);">
+          Syntra AI Security Platform &copy; 2026. Enterprise SaaS Architecture.
+        </div>
+
+        <div style="display: flex; gap: 20px;">
+          <a href="https://github.com/paidisettilokesh/Syntra-ai" target="_blank" rel="noopener" class="nav-link">GitHub</a>
+          <a href="#hero" class="nav-link">Back to Top ↑</a>
+        </div>
+      </div>
     </footer>
+
   </div>
 
-  <!-- Detail Modal -->
+  <!-- Email Detail Modal -->
   <div id="detail-modal" class="modal-backdrop" onclick="if(event.target === this) closeModal();">
-    <div class="modal-card-3d">
-      <div class="modal-header">
+    <div class="modal-card">
+      <div style="display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 20px; border-bottom: 1px solid var(--border-light); padding-bottom: 16px;">
         <div>
-          <div class="modal-title" id="m-subject">Email Inspection</div>
-          <div style="font-family: var(--font-mono); font-size: 12px; color: var(--text-sub);" id="m-sender">—</div>
+          <h3 style="font-family: var(--font-heading); font-size: 18px; color: var(--cyan);" id="m-subject">Email Telemetry Inspection</h3>
+          <p style="font-family: var(--font-mono); font-size: 12px; color: var(--text-sub);" id="m-sender">—</p>
         </div>
-        <button class="modal-close" onclick="closeModal()">✕</button>
+        <button onclick="closeModal()" style="background: transparent; border: none; color: var(--text-sub); font-size: 24px; cursor: pointer;">✕</button>
       </div>
 
-      <div class="detail-grid">
-        <div class="detail-box">
-          <div class="lbl">Verification Status</div>
-          <div class="val" id="m-status">—</div>
+      <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 20px;">
+        <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-light); padding: 12px; border-radius: 10px;">
+          <div style="font-size: 10px; font-family: var(--font-mono); color: var(--text-muted); text-transform: uppercase;">Verification Status</div>
+          <div style="font-size: 14px; font-weight: 600;" id="m-status">—</div>
         </div>
-        <div class="detail-box">
-          <div class="lbl">Risk Score</div>
-          <div class="val" id="m-score">—</div>
-        </div>
-        <div class="detail-box">
-          <div class="lbl">Category</div>
-          <div class="val" id="m-category">—</div>
-        </div>
-        <div class="detail-box">
-          <div class="lbl">Importance Score</div>
-          <div class="val" id="m-importance">—</div>
+        <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-light); padding: 12px; border-radius: 10px;">
+          <div style="font-size: 10px; font-family: var(--font-mono); color: var(--text-muted); text-transform: uppercase;">Risk Score</div>
+          <div style="font-size: 14px; font-weight: 600; color: var(--cyan);" id="m-score">—</div>
         </div>
       </div>
 
       <div style="margin-bottom: 20px;">
-        <div style="font-family: var(--font-mono); font-size: 11px; color: var(--text-sub); text-transform: uppercase; margin-bottom: 8px;">Triggered Rules</div>
+        <div style="font-family: var(--font-mono); font-size: 11px; color: var(--text-sub); text-transform: uppercase; margin-bottom: 8px;">Triggered Security Rules</div>
         <div id="m-rules">None</div>
       </div>
 
-      <div style="margin-bottom: 20px;">
-        <div style="font-family: var(--font-mono); font-size: 11px; color: var(--text-sub); text-transform: uppercase; margin-bottom: 8px;">Security Analysis Reason</div>
-        <div id="m-reason" style="background: rgba(0,0,0,0.4); border: 1px solid var(--border-light); padding: 14px; border-radius: 10px; font-size: 13px; color: var(--text-sub);">—</div>
+      <div style="margin-bottom: 24px;">
+        <div style="font-family: var(--font-mono); font-size: 11px; color: var(--text-sub); text-transform: uppercase; margin-bottom: 8px;">AI Security Reason</div>
+        <div id="m-reason" style="background: rgba(0,0,0,0.3); border: 1px solid var(--border-light); padding: 14px; border-radius: 10px; font-size: 13px; color: var(--text-sub);">—</div>
       </div>
 
-      <button class="btn-3d" style="width: 100%; justify-content: center;" onclick="closeModal()">Dismiss Telemetry View</button>
+      <button class="btn-primary" style="width: 100%; justify-content: center;" onclick="closeModal()">Close Inspector</button>
     </div>
   </div>
 
-  <!-- JavaScript Logic -->
+  <!-- JavaScript App Logic -->
   <script>
-    // ── Global State ──
+    // Global State
     let rawEmails = [];
     let activeFilter = 'all';
     let riskChart, categoryChart, timelineChart;
     let isLightMode = false;
     let threeFog, threeIcoMat;
 
-    // ── Theme Toggle Logic ──
+    // Theme Toggle
     function toggleTheme() {
       applyTheme(!isLightMode);
     }
@@ -1125,30 +1434,25 @@
       isLightMode = isLight;
       const body = document.body;
       const icon = document.getElementById('theme-icon');
-      const label = document.getElementById('theme-label');
 
       if (isLight) {
         body.classList.add('light-theme');
         if (icon) icon.textContent = '🌙';
-        if (label) label.textContent = 'Dark Mode';
         localStorage.setItem('syntra_theme', 'light');
-
         if (threeFog) threeFog.color.setHex(0xf1f5f9);
         if (threeIcoMat) { threeIcoMat.color.setHex(0x0284c7); threeIcoMat.opacity = 0.15; }
         Chart.defaults.color = '#334155';
       } else {
         body.classList.remove('light-theme');
         if (icon) icon.textContent = '☀️';
-        if (label) label.textContent = 'Light Mode';
         localStorage.setItem('syntra_theme', 'dark');
-
-        if (threeFog) threeFog.color.setHex(0x040711);
+        if (threeFog) threeFog.color.setHex(0x060913);
         if (threeIcoMat) { threeIcoMat.color.setHex(0x00f0ff); threeIcoMat.opacity = 0.08; }
         Chart.defaults.color = '#94a3b8';
       }
 
       if (riskChart) {
-        riskChart.options.plugins.legend.labels.color = isLight ? '#334155' : '#f1f5f9';
+        riskChart.options.plugins.legend.labels.color = isLight ? '#334155' : '#f8fafc';
         riskChart.update();
       }
       if (categoryChart) {
@@ -1165,11 +1469,22 @@
       }
     }
 
-    // ── 1. Three.js Interactive 3D Background ──
+    function toggleMobileMenu() {
+      document.getElementById('mobile-drawer').classList.toggle('open');
+    }
+
+    function toggleFaq(btn) {
+      const item = btn.parentElement;
+      item.classList.toggle('open');
+      const span = btn.querySelector('span:last-child');
+      span.textContent = item.classList.contains('open') ? '−' : '+';
+    }
+
+    // Three.js Background Particle Scene
     function initThreeJSBackground() {
       const canvas = document.getElementById('webgl-bg');
       const scene = new THREE.Scene();
-      threeFog = new THREE.FogExp2(isLightMode ? 0xf1f5f9 : 0x040711, 0.0015);
+      threeFog = new THREE.FogExp2(isLightMode ? 0xf1f5f9 : 0x060913, 0.0015);
       scene.fog = threeFog;
 
       const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 1000);
@@ -1179,7 +1494,6 @@
       renderer.setSize(window.innerWidth, window.innerHeight);
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-      // Particle Grid & Floating Geometry
       const geometry = new THREE.BufferGeometry();
       const count = 700;
       const positions = new Float32Array(count * 3);
@@ -1202,32 +1516,19 @@
       geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
       geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
 
-      const material = new THREE.PointsMaterial({
-        size: 3,
-        vertexColors: true,
-        transparent: true,
-        opacity: 0.6
-      });
-
+      const material = new THREE.PointsMaterial({ size: 3, vertexColors: true, transparent: true, opacity: 0.6 });
       const particleSystem = new THREE.Points(geometry, material);
       scene.add(particleSystem);
 
-      // Wireframe Floating Icosahedron
       const icoGeo = new THREE.IcosahedronGeometry(120, 1);
-      threeIcoMat = new THREE.MeshBasicMaterial({
-        color: isLightMode ? 0x0284c7 : 0x00f0ff,
-        wireframe: true,
-        transparent: true,
-        opacity: isLightMode ? 0.15 : 0.08
-      });
+      threeIcoMat = new THREE.MeshBasicMaterial({ color: isLightMode ? 0x0284c7 : 0x00f0ff, wireframe: true, transparent: true, opacity: isLightMode ? 0.15 : 0.08 });
       const icoMesh = new THREE.Mesh(icoGeo, threeIcoMat);
       scene.add(icoMesh);
 
-      // Mouse Parallax Effect
       let mouseX = 0, mouseY = 0;
       document.addEventListener('mousemove', (e) => {
-        mouseX = (e.clientX - window.innerWidth / 2) * 0.05;
-        mouseY = (e.clientY - window.innerHeight / 2) * 0.05;
+        mouseX = (e.clientX - window.innerWidth / 2) * 0.04;
+        mouseY = (e.clientY - window.innerHeight / 2) * 0.04;
       });
 
       window.addEventListener('resize', () => {
@@ -1239,20 +1540,16 @@
       function animate() {
         requestAnimationFrame(animate);
         particleSystem.rotation.y += 0.0005;
-        particleSystem.rotation.x += 0.0002;
         icoMesh.rotation.y += 0.002;
-        icoMesh.rotation.x += 0.001;
-
         camera.position.x += (mouseX - camera.position.x) * 0.05;
         camera.position.y += (-mouseY - camera.position.y) * 0.05;
         camera.lookAt(scene.position);
-
         renderer.render(scene, camera);
       }
       animate();
     }
 
-    // ── 2. Three.js Cyber Shield Core Canvas ──
+    // Three.js Cyber Core Scene
     function initCyberCoreCanvas() {
       const canvas = document.getElementById('cyber-core-canvas');
       const rect = canvas.getBoundingClientRect();
@@ -1262,61 +1559,32 @@
 
       const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
       renderer.setSize(rect.width, rect.height);
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-      // Inner Core Sphere
       const sphereGeo = new THREE.SphereGeometry(1.2, 24, 24);
       const sphereMat = new THREE.MeshBasicMaterial({ color: 0x00f0ff, wireframe: true, transparent: true, opacity: 0.35 });
       const coreMesh = new THREE.Mesh(sphereGeo, sphereMat);
       scene.add(coreMesh);
 
-      // Orbiting Outer Ring 1
       const ringGeo1 = new THREE.TorusGeometry(2.0, 0.02, 16, 100);
       const ringMat1 = new THREE.MeshBasicMaterial({ color: 0x8b5cf6, transparent: true, opacity: 0.7 });
       const ring1 = new THREE.Mesh(ringGeo1, ringMat1);
       ring1.rotation.x = Math.PI / 3;
       scene.add(ring1);
 
-      // Orbiting Outer Ring 2
-      const ringGeo2 = new THREE.TorusGeometry(2.3, 0.015, 16, 100);
-      const ringMat2 = new THREE.MeshBasicMaterial({ color: 0x10b981, transparent: true, opacity: 0.5 });
-      const ring2 = new THREE.Mesh(ringGeo2, ringMat2);
-      ring2.rotation.y = Math.PI / 4;
-      scene.add(ring2);
-
       function animateCore() {
         requestAnimationFrame(animateCore);
         coreMesh.rotation.y += 0.01;
         ring1.rotation.z += 0.015;
-        ring2.rotation.x += 0.02;
         renderer.render(scene, camera);
       }
       animateCore();
     }
 
-    // ── 3. 3D Tilt Card Interaction ──
-    function initTiltEffects() {
-      const cards = document.querySelectorAll('[data-tilt]');
-      cards.forEach(card => {
-        card.addEventListener('mousemove', (e) => {
-          const rect = card.getBoundingClientRect();
-          const x = e.clientX - rect.left - rect.width / 2;
-          const y = e.clientY - rect.top - rect.height / 2;
-          card.style.transform = `perspective(1000px) rotateX(${-y / 12}deg) rotateY(${x / 12}deg) translateZ(12px)`;
-        });
-
-        card.addEventListener('mouseleave', () => {
-          card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) translateZ(0px)`;
-        });
-      });
-    }
-
-    // ── 4. Initialize Charts ──
+    // Initialize Charts
     function initCharts() {
       Chart.defaults.color = '#94a3b8';
       Chart.defaults.font.family = "'JetBrains Mono', monospace";
 
-      // Risk Spectrum Chart
       const ctxRisk = document.getElementById('chart-risk').getContext('2d');
       riskChart = new Chart(ctxRisk, {
         type: 'doughnut',
@@ -1332,20 +1600,19 @@
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, padding: 14, color: '#f1f5f9' } } },
+          plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, padding: 14, color: '#f8fafc' } } },
           cutout: '70%'
         }
       });
 
-      // AI Category Classification Chart
       const ctxCat = document.getElementById('chart-category').getContext('2d');
       categoryChart = new Chart(ctxCat, {
         type: 'bar',
         data: {
-          labels: ['Phishing', 'Spam', 'Security', 'Billing', 'General'],
+          labels: [],
           datasets: [{
             label: 'Emails',
-            data: [0, 0, 0, 0, 0],
+            data: [],
             backgroundColor: 'rgba(0, 240, 255, 0.6)',
             borderColor: '#00f0ff',
             borderWidth: 1,
@@ -1363,7 +1630,6 @@
         }
       });
 
-      // Timeline Velocity Chart
       const ctxTime = document.getElementById('chart-timeline').getContext('2d');
       const gradient = ctxTime.createLinearGradient(0, 0, 0, 200);
       gradient.addColorStop(0, 'rgba(139, 92, 246, 0.4)');
@@ -1396,28 +1662,20 @@
       });
     }
 
-    // ── 5. Data Fetching & Syncing ──
+    // Fetch Telemetry Data
     async function fetchDashboardData() {
       const btn = document.getElementById('btn-refresh');
       btn.style.opacity = '0.5';
 
       try {
-        // Health
         const resHealth = await fetch('/health');
         if (resHealth.ok) {
-          const h = await resHealth.json();
           document.getElementById('health-text').textContent = 'SYSTEM ONLINE';
-          document.getElementById('health-badge').classList.remove('offline');
-          document.getElementById('val-uptime').textContent = h.uptime_seconds + 's';
-        } else {
-          throw new Error('Health offline');
         }
 
-        // Stats
         const resStats = await fetch('/api/stats');
         if (resStats.ok) {
           const s = await resStats.json();
-
           const total = s.total_emails || 0;
           const blocked = s.emails_blocked || 0;
           const dist = s.risk_level_distribution || s.risk_distribution || {};
@@ -1427,62 +1685,37 @@
           const highCount = dist.High || dist.high || 0;
           const critCount = dist.Critical || dist.critical || 0;
 
-          animateCount('stat-total', total);
-          animateCount('stat-malicious', blocked || (highCount + critCount));
-          animateCount('stat-suspicious', medCount);
-          animateCount('stat-clean', lowCount);
+          document.getElementById('stat-total').textContent = total;
+          document.getElementById('stat-malicious').textContent = blocked || (highCount + critCount);
+          document.getElementById('stat-suspicious').textContent = medCount;
+          document.getElementById('stat-clean').textContent = lowCount;
 
           updateRiskChart(dist);
           updateCategoryChart(s.category_distribution || {});
           updateTimelineChart(s.emails_per_day || s.daily_volume || []);
         }
 
-        // Emails List
         const resEmails = await fetch('/api/emails?limit=100');
         if (resEmails.ok) {
           const data = await resEmails.json();
           rawEmails = data.emails || [];
           renderTable();
         }
-
-        document.getElementById('val-last-update').textContent = new Date().toLocaleTimeString();
-
       } catch (err) {
         console.warn('Dashboard fetch warning:', err);
-        document.getElementById('health-text').textContent = 'OFFLINE / STANDBY';
-        document.getElementById('health-badge').classList.add('offline');
       } finally {
         btn.style.opacity = '1';
       }
     }
 
-    // Counter animation
-    function animateCount(id, target) {
-      const el = document.getElementById(id);
-      const start = parseInt(el.textContent) || 0;
-      if (start === target) return;
-      let current = start;
-      const step = Math.ceil((target - start) / 10) || (target > start ? 1 : -1);
-      const timer = setInterval(() => {
-        current += step;
-        if ((step > 0 && current >= target) || (step < 0 && current <= target)) {
-          el.textContent = target;
-          clearInterval(timer);
-        } else {
-          el.textContent = current;
-        }
-      }, 30);
-    }
-
-    // Chart Updaters
     function updateRiskChart(dist) {
       if (!dist) return;
-      const low = dist.Low || dist.low || 0;
-      const med = dist.Medium || dist.medium || 0;
-      const high = dist.High || dist.high || 0;
-      const crit = dist.Critical || dist.critical || 0;
-
-      riskChart.data.datasets[0].data = [low, med, high, crit];
+      riskChart.data.datasets[0].data = [
+        dist.Low || dist.low || 0,
+        dist.Medium || dist.medium || 0,
+        dist.High || dist.high || 0,
+        dist.Critical || dist.critical || 0
+      ];
       riskChart.update('active');
     }
 
@@ -1495,19 +1728,14 @@
 
     function updateTimelineChart(daily) {
       if (!daily || !Array.isArray(daily)) return;
-      timelineChart.data.labels = daily.map(d => {
-        if (!d.day) return '';
-        const parts = d.day.split('-');
-        return parts.length === 3 ? `${parts[1]}/${parts[2]}` : d.day;
-      });
+      timelineChart.data.labels = daily.map(d => d.day);
       timelineChart.data.datasets[0].data = daily.map(d => d.count || 0);
       timelineChart.update('active');
     }
 
-    // Filter and Search Table
     function setFilter(filter, el) {
       activeFilter = filter;
-      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
       el.classList.add('active');
       renderTable();
     }
@@ -1517,20 +1745,16 @@
       const tbody = document.getElementById('email-tbody');
 
       const filtered = rawEmails.filter(item => {
-        const matchesSearch = (item.sender || '').toLowerCase().includes(query) ||
-                              (item.subject || '').toLowerCase().includes(query) ||
-                              (item.category || '').toLowerCase().includes(query);
-
+        const matchesSearch = (item.sender || '').toLowerCase().includes(query) || (item.subject || '').toLowerCase().includes(query);
         let matchesTab = true;
         if (activeFilter === 'high') matchesTab = item.risk_level === 'High' || item.risk_level === 'Critical';
         if (activeFilter === 'suspicious') matchesTab = item.verification_status === 'Suspicious';
         if (activeFilter === 'clean') matchesTab = item.risk_level === 'Low' || item.risk_level === 'Clean';
-
         return matchesSearch && matchesTab;
       });
 
       if (filtered.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:40px; color:var(--text-muted)">No matching email telemetries found</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:30px; color:var(--text-muted)">No matching email records found</td></tr>`;
         return;
       }
 
@@ -1541,44 +1765,28 @@
         return `
           <tr>
             <td>
-              <div class="sender-cell">
-                <span class="sender-name">${esc(senderName)}</span>
-                <span class="sender-email">${esc(e.sender || '')}</span>
-              </div>
+              <div style="font-weight:600;">${esc(senderName)}</div>
+              <div style="font-family:var(--font-mono); font-size:11px; color:var(--text-muted);">${esc(e.sender || '')}</div>
             </td>
-            <td>
-              <div class="subject-text" title="${esc(e.subject)}">${esc(e.subject || '(No Subject)')}</div>
-            </td>
+            <td><div style="max-width:300px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${esc(e.subject || '(No Subject)')}</div></td>
             <td><span style="font-family:var(--font-mono); font-size:12px;">${esc(e.category || 'General')}</span></td>
             <td><span class="risk-badge ${riskClass}">${esc(e.risk_level || 'Low')}</span></td>
-            <td><span class="score-meter" style="color:var(--cyan)">${e.risk_score ?? '—'}/100</span></td>
-            <td><span style="font-size:12px; color:var(--text-sub)">${esc(e.verification_status || 'OK')}</span></td>
-            <td>
-              <button class="inspect-btn" onclick="openModal(${index})">Inspect 3D</button>
-            </td>
+            <td><span style="font-family:var(--font-mono); font-weight:700; color:var(--cyan);">${e.risk_score ?? '—'}/100</span></td>
+            <td><span style="font-size:12px; color:var(--text-sub);">${esc(e.verification_status || 'OK')}</span></td>
+            <td><button class="btn-secondary" style="min-height:32px; padding:4px 12px; font-size:11px;" onclick="openModal(${index})">Inspect</button></td>
           </tr>
         `;
       }).join('');
     }
 
-    // Modal Inspection
     function openModal(index) {
       const e = rawEmails[index];
       if (!e) return;
-
       document.getElementById('m-subject').textContent = e.subject || '(No Subject)';
       document.getElementById('m-sender').textContent = e.sender || 'Unknown';
       document.getElementById('m-status').textContent = e.verification_status || 'OK';
       document.getElementById('m-score').textContent = (e.risk_score ?? '—') + '/100';
-      document.getElementById('m-category').textContent = e.category || 'General';
-      document.getElementById('m-importance').textContent = (e.importance_score ?? '—') + '/10';
-      document.getElementById('m-reason').textContent = e.verification_reason || 'No risk escalation triggered by AI parser.';
-
-      const rules = (e.triggered_rules || '').split(',').filter(Boolean);
-      document.getElementById('m-rules').innerHTML = rules.length
-        ? rules.map(r => `<span class="rule-tag">${esc(r)}</span>`).join('')
-        : '<span style="color:var(--text-muted); font-size:12px;">No automated rule violations</span>';
-
+      document.getElementById('m-reason').textContent = e.verification_reason || 'No threat escalation triggered.';
       document.getElementById('detail-modal').classList.add('open');
     }
 
@@ -1590,15 +1798,11 @@
       return String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     }
 
-    // Boot
     window.addEventListener('DOMContentLoaded', () => {
       const savedTheme = localStorage.getItem('syntra_theme');
-      if (savedTheme === 'light') {
-        applyTheme(true);
-      }
+      if (savedTheme === 'light') applyTheme(true);
       initThreeJSBackground();
       initCyberCoreCanvas();
-      initTiltEffects();
       initCharts();
       fetchDashboardData();
       setInterval(fetchDashboardData, 10000);
