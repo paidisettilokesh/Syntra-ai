@@ -1,3 +1,4 @@
+import os
 import time
 import requests
 from typing import Optional
@@ -30,10 +31,6 @@ class TelegramNotificationService(INotificationService):
     """
     Production-grade Telegram Bot notification service for Syntra AI.
     Delivers structured alerts via Telegram Bot API using HTTP REST requests.
-
-    Issue #6: Now includes full security verdict in notifications
-    (risk score, triggered rules, reason) for complete explainability.
-    Issue #11: Uses centralized sanitizer for credential masking and HTML safety.
     """
 
     def __init__(self):
@@ -47,15 +44,28 @@ class TelegramNotificationService(INotificationService):
 
     @property
     def bot_token(self) -> Optional[str]:
+        token = os.getenv("TELEGRAM_BOT_TOKEN")
+        if token and token.strip():
+            return token.strip()
         if settings.notify.telegram_bot_token:
             return settings.notify.telegram_bot_token.get_secret_value()
         return None
 
     @property
     def chat_id(self) -> Optional[str]:
+        cid = os.getenv("TELEGRAM_CHAT_ID")
+        if cid and cid.strip():
+            return cid.strip()
         if settings.notify.telegram_chat_id:
             return settings.notify.telegram_chat_id.get_secret_value()
         return None
+
+    @property
+    def is_enabled(self) -> bool:
+        env_enable = os.getenv("FEATURE_ENABLE_TELEGRAM") or os.getenv("ENABLE_TELEGRAM")
+        if env_enable is not None:
+            return env_enable.lower() in ("true", "1", "yes")
+        return settings.features.enable_telegram
 
     def _build_html_message(
         self,
@@ -160,7 +170,7 @@ class TelegramNotificationService(INotificationService):
 
         Issue #6: Includes verification_result for full security explainability.
         """
-        if not settings.features.enable_telegram:
+        if not self.is_enabled:
             logger.info("Telegram notifications are disabled by feature flag.")
             return
 

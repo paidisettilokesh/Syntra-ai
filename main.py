@@ -76,10 +76,8 @@ async def main():
             repo = container.resolve(IRepository)
             ai = container.resolve(IAIProvider)
 
-            # Notifications
-            notification_services = []
-            if settings.features.enable_telegram:
-                notification_services.append(TelegramNotificationService())
+            # Notifications — Telegram service handles its own feature flag dynamically
+            notification_services = [TelegramNotificationService()]
             if settings.features.enable_twilio:
                 notification_services.append(TwilioWhatsAppService())
 
