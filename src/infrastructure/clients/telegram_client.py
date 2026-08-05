@@ -37,17 +37,6 @@ class TelegramNotificationService(INotificationService):
     """
 
     def __init__(self):
-        self.bot_token = (
-            settings.notify.telegram_bot_token.get_secret_value()
-            if settings.notify.telegram_bot_token
-            else None
-        )
-        self.chat_id = (
-            settings.notify.telegram_chat_id.get_secret_value()
-            if settings.notify.telegram_chat_id
-            else None
-        )
-
         if not self.bot_token or not self.chat_id:
             logger.warning("Telegram Bot Token or Chat ID not fully configured.")
         else:
@@ -55,6 +44,18 @@ class TelegramNotificationService(INotificationService):
                 f"Telegram configured. Token: {mask_secret(self.bot_token)} | "
                 f"Chat ID: {mask_secret(self.chat_id)}"
             )
+
+    @property
+    def bot_token(self) -> Optional[str]:
+        if settings.notify.telegram_bot_token:
+            return settings.notify.telegram_bot_token.get_secret_value()
+        return None
+
+    @property
+    def chat_id(self) -> Optional[str]:
+        if settings.notify.telegram_chat_id:
+            return settings.notify.telegram_chat_id.get_secret_value()
+        return None
 
     def _build_html_message(
         self,
