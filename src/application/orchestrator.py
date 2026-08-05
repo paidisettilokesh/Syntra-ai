@@ -1,3 +1,4 @@
+import os
 import time
 from typing import List, Optional
 
@@ -98,8 +99,11 @@ class EmailOrchestrator:
             should_notify = False
             notification_status = "suppressed"
 
+            notify_all = os.environ.get("NOTIFY_ALL_EMAILS", "false").lower() in ("true", "1", "yes")
+
             if (
-                analysis.importance_score >= 7
+                notify_all
+                or analysis.importance_score >= 7
                 or analysis.action_required
                 or analysis.category in high_priority_categories
             ):
