@@ -13,65 +13,64 @@ import os
 from dataclasses import dataclass
 from typing import Dict, List, Optional, Tuple
 
-
 # ── Magic byte signatures ──────────────────────────────────────────────────────
 # Maps the first N bytes of a file to its actual type.
 # Signatures ordered by specificity (longer patterns first where needed).
 
 _MAGIC_SIGNATURES: List[Tuple[bytes, str]] = [
     # Executable / Dangerous
-    (b"MZ",                              "exe/dll"),        # PE32 Windows executable
-    (b"\x7fELF",                         "elf"),            # Linux ELF executable
-    (b"\xca\xfe\xba\xbe",               "macho"),          # macOS Mach-O binary
-    (b"#!/",                             "shell-script"),   # Shell script shebang
-    (b"#!",                              "script"),         # Generic script shebang
+    (b"MZ", "exe/dll"),  # PE32 Windows executable
+    (b"\x7fELF", "elf"),  # Linux ELF executable
+    (b"\xca\xfe\xba\xbe", "macho"),  # macOS Mach-O binary
+    (b"#!/", "shell-script"),  # Shell script shebang
+    (b"#!", "script"),  # Generic script shebang
     # Office / Macro-capable
-    (b"PK\x03\x04",                     "zip-based"),      # ZIP (DOCX/XLSX/PPTX/JAR/APK)
-    (b"\xd0\xcf\x11\xe0\xa1\xb1\x1a\xe1", "ole-compound"),# OLE2 (DOC/XLS/PPT — legacy Office)
+    (b"PK\x03\x04", "zip-based"),  # ZIP (DOCX/XLSX/PPTX/JAR/APK)
+    (b"\xd0\xcf\x11\xe0\xa1\xb1\x1a\xe1", "ole-compound"),  # OLE2 (DOC/XLS/PPT — legacy Office)
     # Documents
-    (b"%PDF",                            "pdf"),
+    (b"%PDF", "pdf"),
     # Archives
-    (b"Rar!\x1a\x07",                   "rar"),
-    (b"\x1f\x8b",                        "gzip"),
-    (b"BZh",                             "bzip2"),
-    (b"\xfd7zXZ\x00",                   "xz"),
-    (b"7z\xbc\xaf\x27\x1c",            "7zip"),
+    (b"Rar!\x1a\x07", "rar"),
+    (b"\x1f\x8b", "gzip"),
+    (b"BZh", "bzip2"),
+    (b"\xfd7zXZ\x00", "xz"),
+    (b"7z\xbc\xaf\x27\x1c", "7zip"),
     # Images
-    (b"\xff\xd8\xff",                    "jpeg"),
-    (b"\x89PNG\r\n\x1a\n",             "png"),
-    (b"GIF87a",                          "gif"),
-    (b"GIF89a",                          "gif"),
-    (b"BM",                              "bmp"),
-    (b"RIFF",                            "riff"),           # WAV/AVI
+    (b"\xff\xd8\xff", "jpeg"),
+    (b"\x89PNG\r\n\x1a\n", "png"),
+    (b"GIF87a", "gif"),
+    (b"GIF89a", "gif"),
+    (b"BM", "bmp"),
+    (b"RIFF", "riff"),  # WAV/AVI
     # Java
-    (b"\xca\xfe\xba\xbe",              "java-class"),      # Java class (same as macho — context-dependent)
+    (b"\xca\xfe\xba\xbe", "java-class"),  # Java class (same as macho — context-dependent)
 ]
 
 # ── Extension to expected type groups ─────────────────────────────────────────
 # Maps declared file extensions to the set of acceptable detected types.
 
 _EXTENSION_ALLOWED_TYPES: Dict[str, List[str]] = {
-    ".pdf":  ["pdf"],
-    ".jpg":  ["jpeg"],
+    ".pdf": ["pdf"],
+    ".jpg": ["jpeg"],
     ".jpeg": ["jpeg"],
-    ".png":  ["png"],
-    ".gif":  ["gif"],
-    ".bmp":  ["bmp"],
-    ".docx": ["zip-based"],   # Modern Office
+    ".png": ["png"],
+    ".gif": ["gif"],
+    ".bmp": ["bmp"],
+    ".docx": ["zip-based"],  # Modern Office
     ".xlsx": ["zip-based"],
     ".pptx": ["zip-based"],
-    ".doc":  ["ole-compound", "zip-based"],
-    ".xls":  ["ole-compound", "zip-based"],
-    ".ppt":  ["ole-compound", "zip-based"],
-    ".zip":  ["zip-based"],
-    ".rar":  ["rar"],
-    ".7z":   ["7zip"],
-    ".gz":   ["gzip"],
-    ".tar":  ["gzip", "xz", "bzip2"],
-    ".txt":  [],              # text has no reliable magic bytes — skip
-    ".csv":  [],
+    ".doc": ["ole-compound", "zip-based"],
+    ".xls": ["ole-compound", "zip-based"],
+    ".ppt": ["ole-compound", "zip-based"],
+    ".zip": ["zip-based"],
+    ".rar": ["rar"],
+    ".7z": ["7zip"],
+    ".gz": ["gzip"],
+    ".tar": ["gzip", "xz", "bzip2"],
+    ".txt": [],  # text has no reliable magic bytes — skip
+    ".csv": [],
     ".json": [],
-    ".xml":  [],
+    ".xml": [],
     ".html": [],
 }
 

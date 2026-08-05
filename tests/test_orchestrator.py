@@ -62,7 +62,6 @@ async def test_orchestrator_rule_engine_bypass():
     assert kwargs["score"] == 1
 
 
-
 @pytest.mark.asyncio
 async def test_orchestrator_ai_high_priority_trigger():
     mail_client = MagicMock()

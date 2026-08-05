@@ -1,10 +1,11 @@
 from unittest.mock import AsyncMock, MagicMock
+
 import pytest
 
 from src.application.orchestrator import EmailOrchestrator
 from src.application.services.email_verification import EmailVerificationService
 from src.domain.exceptions import AIProviderError
-from src.domain.models import AnalysisResult, EmailMetadata, VerificationResult
+from src.domain.models import AnalysisResult, EmailMetadata
 
 
 @pytest.fixture

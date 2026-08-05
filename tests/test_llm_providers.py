@@ -1,4 +1,3 @@
-import asyncio
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import groq
@@ -25,6 +24,7 @@ def mock_openrouter_settings():
 
 
 # ── GroqProvider Tests ─────────────────────────────────────────────────────────
+
 
 @pytest.mark.asyncio
 async def test_groq_success(mock_groq_settings):
@@ -119,12 +119,15 @@ async def test_groq_500_error(mock_groq_settings):
 
 # ── OpenRouterProvider Tests ───────────────────────────────────────────────────
 
+
 @pytest.mark.asyncio
 async def test_openrouter_success(mock_openrouter_settings):
     with patch("src.infrastructure.llm.openrouter_provider.AsyncOpenAI") as mock_client_cls:
         mock_client = MagicMock()
         mock_completion = MagicMock()
-        mock_completion.choices = [MagicMock(message=MagicMock(content='{"result": "openrouter_ok"}'))]
+        mock_completion.choices = [
+            MagicMock(message=MagicMock(content='{"result": "openrouter_ok"}'))
+        ]
         mock_client.chat.completions.create = AsyncMock(return_value=mock_completion)
         mock_client_cls.return_value = mock_client
 
@@ -134,7 +137,9 @@ async def test_openrouter_success(mock_openrouter_settings):
         assert res == '{"result": "openrouter_ok"}'
         mock_client.chat.completions.create.assert_called_once()
         # Primary model used first
-        assert mock_client.chat.completions.create.call_args[1]["model"] == "google/gemini-2.5-flash"
+        assert (
+            mock_client.chat.completions.create.call_args[1]["model"] == "google/gemini-2.5-flash"
+        )
 
 
 @pytest.mark.asyncio
@@ -142,7 +147,9 @@ async def test_openrouter_model_failure_cascade(mock_openrouter_settings):
     with patch("src.infrastructure.llm.openrouter_provider.AsyncOpenAI") as mock_client_cls:
         mock_client = MagicMock()
         success_completion = MagicMock()
-        success_completion.choices = [MagicMock(message=MagicMock(content='{"result": "deepseek_ok"}'))]
+        success_completion.choices = [
+            MagicMock(message=MagicMock(content='{"result": "deepseek_ok"}'))
+        ]
 
         # First model fails, second succeeds
         mock_client.chat.completions.create = AsyncMock(
@@ -176,6 +183,7 @@ async def test_openrouter_all_models_fail(mock_openrouter_settings):
 
 
 # ── FallbackLLMProvider Tests ─────────────────────────────────────────────────
+
 
 @pytest.mark.asyncio
 async def test_fallback_primary_success():

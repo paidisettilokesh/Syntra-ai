@@ -10,7 +10,7 @@ load_dotenv()
 from src.application.orchestrator import EmailOrchestrator
 from src.config.settings import settings
 from src.config.validator import StartupValidator
-from src.domain.interfaces import IAIProvider, INotificationService, IRepository
+from src.domain.interfaces import IAIProvider, IRepository
 from src.infrastructure.clients.ai_providers import ChainAIProvider
 from src.infrastructure.clients.gmail_client import GmailClient
 from src.infrastructure.clients.telegram_client import TelegramNotificationService
@@ -35,6 +35,7 @@ def _start_dashboard(port: int = 8080) -> None:
     """
     try:
         from dashboard.server import run_server
+
         logger.info(f"Dashboard starting on http://localhost:{port}")
         run_server(port=port, debug=False)
     except ImportError as e:

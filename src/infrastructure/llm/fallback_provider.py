@@ -101,15 +101,11 @@ class FallbackLLMProvider(ILLMProvider):
                 f"Fallback={self._fallback.provider_name}. "
                 f"Last error: {exc}"
             )
-            raise AIProviderError(
-                f"All LLM providers exhausted. Last error: {exc}"
-            ) from exc
+            raise AIProviderError(f"All LLM providers exhausted. Last error: {exc}") from exc
 
         except Exception as exc:
             logger.error(
                 f"[LLM] Fallback provider '{self._fallback.provider_name}' "
                 f"unexpected failure: {exc}"
             )
-            raise AIProviderError(
-                f"Fallback provider failed unexpectedly: {exc}"
-            ) from exc
+            raise AIProviderError(f"Fallback provider failed unexpectedly: {exc}") from exc

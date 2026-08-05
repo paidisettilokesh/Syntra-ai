@@ -14,6 +14,7 @@ def async_retry(max_retries=3, base_delay=2):
     Delay between attempts: base_delay ** attempt_number (seconds).
     The wrapped function's metadata is preserved via @functools.wraps.
     """
+
     def decorator(func: Callable):
         @functools.wraps(func)
         async def wrapper(*args, **kwargs):
@@ -26,7 +27,7 @@ def async_retry(max_retries=3, base_delay=2):
                             f"Function {func.__name__} failed after {max_retries} attempts. Error: {e}"
                         )
                         raise
-                    delay = base_delay ** attempt
+                    delay = base_delay**attempt
                     logger.warning(
                         f"Attempt {attempt} failed for {func.__name__}. "
                         f"Retrying in {delay}s. Error: {e}"

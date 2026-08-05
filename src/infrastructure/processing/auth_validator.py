@@ -15,15 +15,15 @@ This module uses only Python standard library — no new dependencies.
 
 import re
 from dataclasses import dataclass, field
-from typing import Dict, Optional
+from typing import Dict
 
 
 @dataclass
 class EmailAuthResult:
     """Parsed email authentication results."""
 
-    spf: str = "none"    # "pass" | "fail" | "softfail" | "neutral" | "none" | "permerror"
-    dkim: str = "none"   # "pass" | "fail" | "none"
+    spf: str = "none"  # "pass" | "fail" | "softfail" | "neutral" | "none" | "permerror"
+    dkim: str = "none"  # "pass" | "fail" | "none"
     dmarc: str = "none"  # "pass" | "fail" | "none"
     raw_results: Dict[str, str] = field(default_factory=dict)
 
@@ -76,7 +76,9 @@ _DKIM_PATTERN = re.compile(r"\bdkim=(\w+)", re.IGNORECASE)
 _DMARC_PATTERN = re.compile(r"\bdmarc=(\w+)", re.IGNORECASE)
 
 # Received-SPF header result extraction
-_RECEIVED_SPF_PATTERN = re.compile(r"^(pass|fail|softfail|neutral|none|permerror|temperror)", re.IGNORECASE)
+_RECEIVED_SPF_PATTERN = re.compile(
+    r"^(pass|fail|softfail|neutral|none|permerror|temperror)", re.IGNORECASE
+)
 
 
 def parse_auth_results(auth_headers: Dict[str, str]) -> EmailAuthResult:

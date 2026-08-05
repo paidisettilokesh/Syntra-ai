@@ -48,7 +48,7 @@ class AIConfig(BaseSettings):
     groq_api_key: Optional[SecretStr] = None
     gemini_api_key: Optional[SecretStr] = None
     openai_api_key: Optional[SecretStr] = None
-    openrouter_api_key: Optional[SecretStr] = None   # OpenRouter fallback provider
+    openrouter_api_key: Optional[SecretStr] = None  # OpenRouter fallback provider
     ollama_base_url: Optional[AnyUrl] = None
     model_config = SettingsConfigDict(env_prefix="")
 
@@ -75,7 +75,9 @@ class DatabaseConfig(BaseSettings):
 class LoggingConfig(BaseSettings):
     log_level: str = Field("INFO")
     log_file: str = Field("logs/agent.log")
-    log_max_bytes: int = Field(10 * 1024 * 1024, description="Max log file size in bytes (default 10 MB)")
+    log_max_bytes: int = Field(
+        10 * 1024 * 1024, description="Max log file size in bytes (default 10 MB)"
+    )
     log_backup_count: int = Field(5, description="Number of rotated backup log files to keep")
     structured_logging: bool = Field(False, description="Output logs in JSON format when True")
     model_config = SettingsConfigDict(env_prefix="LOG_")
@@ -91,7 +93,9 @@ class VerificationConfig(BaseSettings):
     enable_ai_verification: bool = Field(True, validation_alias="ENABLE_AI_VERIFICATION")
     enable_rule_verification: bool = Field(True, validation_alias="ENABLE_RULE_VERIFICATION")
     block_suspicious_emails: bool = Field(True, validation_alias="BLOCK_SUSPICIOUS_EMAILS")
-    verification_confidence_threshold: float = Field(80.0, validation_alias="VERIFICATION_CONFIDENCE_THRESHOLD")
+    verification_confidence_threshold: float = Field(
+        80.0, validation_alias="VERIFICATION_CONFIDENCE_THRESHOLD"
+    )
     enable_trusted_senders: bool = Field(True, validation_alias="ENABLE_TRUSTED_SENDERS")
     enable_weighted_scoring: bool = Field(True, validation_alias="ENABLE_WEIGHTED_SCORING")
     enable_smart_ai_routing: bool = Field(True, validation_alias="ENABLE_SMART_AI_ROUTING")

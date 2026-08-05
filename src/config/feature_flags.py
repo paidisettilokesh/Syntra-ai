@@ -5,8 +5,8 @@ class FeatureFlags(BaseSettings):
     enable_ai: bool = True
     enable_ocr: bool = True
     enable_telegram: bool = True
-    enable_twilio: bool = False          # WhatsApp alerts via Twilio (opt-in)
-    enable_dashboard: bool = True        # Issue #8: Web dashboard — default ON
+    enable_twilio: bool = False  # WhatsApp alerts via Twilio (opt-in)
+    enable_dashboard: bool = True  # Issue #8: Web dashboard — default ON
     enable_analytics: bool = True
     enable_health_monitoring: bool = True
     enable_prompt_compression: bool = False

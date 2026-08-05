@@ -19,7 +19,9 @@ def test_validator_mismatched_emails():
             with patch("src.config.validator.os.access", return_value=True):
                 with pytest.raises(InvalidConfiguration) as exc_info:
                     StartupValidator.validate()
-                assert "Number of EMAIL_USERS (2) must match EMAIL_PASSWORDS (1)" in str(exc_info.value)
+                assert "Number of EMAIL_USERS (2) must match EMAIL_PASSWORDS (1)" in str(
+                    exc_info.value
+                )
 
 
 def test_validator_missing_telegram_secrets():
@@ -38,8 +40,9 @@ def test_validator_missing_telegram_secrets():
             with patch("src.config.validator.os.access", return_value=True):
                 with pytest.raises(InvalidConfiguration) as exc_info:
                     StartupValidator.validate()
-                assert "Telegram notifications are enabled (FEATURE_ENABLE_TELEGRAM=true) but TELEGRAM_BOT_TOKEN" in str(
-                    exc_info.value
+                assert (
+                    "Telegram notifications are enabled (FEATURE_ENABLE_TELEGRAM=true) but TELEGRAM_BOT_TOKEN"
+                    in str(exc_info.value)
                 )
 
 

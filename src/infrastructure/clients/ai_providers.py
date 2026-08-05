@@ -1,28 +1,13 @@
-import asyncio
-import json
-
-try:
-    from google import genai as google_genai
-    from google.genai import types as genai_types
-    HAS_GEMINI = True
-except Exception:
-    google_genai = None
-    genai_types = None
-    HAS_GEMINI = False
-
 from typing import Optional
 
-from groq import AsyncGroq
-from openai import AsyncOpenAI
 from pydantic import ValidationError
 
-from src.config.settings import settings
 from src.domain.exceptions import AIProviderError
 from src.domain.interfaces import IAIProvider
 from src.domain.models import AnalysisResult, EmailMetadata, VerificationResult
 from src.utils.logger import get_logger
 from src.utils.retry import async_retry
-from src.utils.sanitizer import mask_secret, sanitize_for_ai
+from src.utils.sanitizer import sanitize_for_ai
 
 logger = get_logger(__name__)
 
@@ -148,7 +133,9 @@ class ChainAIProvider(IAIProvider):
             raise AIProviderError(f"Invalid AI Response format: {e}")
 
     @async_retry(max_retries=2, base_delay=1)
-    async def verify_email(self, email: EmailMetadata, rule_findings: Optional[list] = None) -> VerificationResult:
+    async def verify_email(
+        self, email: EmailMetadata, rule_findings: Optional[list] = None
+    ) -> VerificationResult:
         user_prompt = self._sanitize_email_content(email, rule_findings)
         result_json = await self._call_cascade(_VERIFICATION_SYSTEM_INSTRUCTIONS, user_prompt)
 

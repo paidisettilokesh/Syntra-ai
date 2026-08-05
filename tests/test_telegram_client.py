@@ -1,4 +1,5 @@
 from unittest.mock import MagicMock, patch
+
 import pytest
 
 from src.domain.models import AnalysisResult, EmailMetadata
@@ -8,7 +9,9 @@ from src.infrastructure.clients.telegram_client import TelegramNotificationServi
 @pytest.fixture
 def mock_telegram_env():
     with patch("src.infrastructure.clients.telegram_client.settings") as mock_settings:
-        mock_settings.notify.telegram_bot_token.get_secret_value.return_value = "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11"
+        mock_settings.notify.telegram_bot_token.get_secret_value.return_value = (
+            "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11"
+        )
         mock_settings.notify.telegram_chat_id.get_secret_value.return_value = "987654321"
         mock_settings.features.enable_telegram = True
         yield mock_settings
@@ -46,7 +49,10 @@ def test_telegram_send_alert_success(mock_post, mock_telegram_env):
     service.send_alert(email, analysis)
     assert mock_post.called
     args, kwargs = mock_post.call_args
-    assert "https://api.telegram.org/bot123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11/sendMessage" in args[0]
+    assert (
+        "https://api.telegram.org/bot123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11/sendMessage"
+        in args[0]
+    )
     assert kwargs["json"]["chat_id"] == "987654321"
     assert "Interview Invitation" in kwargs["json"]["text"]
 

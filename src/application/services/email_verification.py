@@ -1,9 +1,8 @@
 import email.utils
 import json
-import os
 import re
 from pathlib import Path
-from typing import Dict, List, Optional, Set, Tuple
+from typing import Dict, List, Optional, Tuple
 from urllib.parse import urlparse
 
 from src.config.settings import settings
@@ -78,20 +77,52 @@ class EmailVerificationService:
     }
 
     DANGEROUS_EXTENSIONS = {
-        ".exe", ".js", ".scr", ".bat", ".cmd", ".vbs", ".ps1", ".vbe",
-        ".jse", ".wsf", ".wsh", ".pif", ".application", ".gadget", ".msi",
-        ".msp", ".hta", ".cpl", ".jar"
+        ".exe",
+        ".js",
+        ".scr",
+        ".bat",
+        ".cmd",
+        ".vbs",
+        ".ps1",
+        ".vbe",
+        ".jse",
+        ".wsf",
+        ".wsh",
+        ".pif",
+        ".application",
+        ".gadget",
+        ".msi",
+        ".msp",
+        ".hta",
+        ".cpl",
+        ".jar",
     }
 
     MACRO_EXTENSIONS = {".docm", ".xlsm", ".pptm", ".dotm", ".xltm"}
 
     URL_SHORTENERS = {
-        "bit.ly", "tinyurl.com", "t.co", "is.gd", "buff.ly", "ow.ly",
-        "rb.gy", "cutt.ly", "goo.gl", "shorturl.at"
+        "bit.ly",
+        "tinyurl.com",
+        "t.co",
+        "is.gd",
+        "buff.ly",
+        "ow.ly",
+        "rb.gy",
+        "cutt.ly",
+        "goo.gl",
+        "shorturl.at",
     }
 
     SUSPICIOUS_TLDS = {
-        ".xyz", ".top", ".work", ".click", ".link", ".download", ".racing", ".club", ".info"
+        ".xyz",
+        ".top",
+        ".work",
+        ".click",
+        ".link",
+        ".download",
+        ".racing",
+        ".club",
+        ".info",
     }
 
     # Subject/body urgency keyword patterns with weighted scores
@@ -240,7 +271,9 @@ class EmailVerificationService:
         self.allowlist: Dict[str, List[str]] = self._load_allowlist()
 
     def _load_allowlist(self) -> Dict[str, List[str]]:
-        allowlist_path = getattr(settings.verification, "allowlist_file", "data/trusted_domains.json")
+        allowlist_path = getattr(
+            settings.verification, "allowlist_file", "data/trusted_domains.json"
+        )
         path = Path(allowlist_path)
         if path.exists():
             try:
@@ -321,7 +354,12 @@ class EmailVerificationService:
         display_name, email_addr, domain = self._extract_sender_parts(sender)
 
         # 1. Malformed Email Address
-        if not email_addr or "@" not in email_addr or "." not in domain or len(domain.split(".")[-1]) < 2:
+        if (
+            not email_addr
+            or "@" not in email_addr
+            or "." not in domain
+            or len(domain.split(".")[-1]) < 2
+        ):
             score += 40
             rules.append("Malformed Email Address")
             threats.append("Malformed Email Address")
@@ -359,7 +397,9 @@ class EmailVerificationService:
         display_lower = display_name.lower()
         for brand, official_domains in self.BRAND_DOMAINS.items():
             if brand in display_lower or any(word in display_lower for word in brand.split()):
-                matches_brand = any(domain == od or domain.endswith("." + od) for od in official_domains)
+                matches_brand = any(
+                    domain == od or domain.endswith("." + od) for od in official_domains
+                )
                 if not matches_brand:
                     score += 35
                     rules.append("Spoofed Domain")
@@ -369,17 +409,32 @@ class EmailVerificationService:
                     )
 
         impersonation_keywords = [
-            "support", "security", "admin", "service", "hr", "payroll",
-            "helpdesk", "verification", "account", "webmail", "noreply",
-            "no-reply", "alert", "team"
+            "support",
+            "security",
+            "admin",
+            "service",
+            "hr",
+            "payroll",
+            "helpdesk",
+            "verification",
+            "account",
+            "webmail",
+            "noreply",
+            "no-reply",
+            "alert",
+            "team",
         ]
         if any(kw in display_lower for kw in impersonation_keywords):
-            if self._is_free_email_domain(domain) or any(domain.endswith(tld) for tld in self.SUSPICIOUS_TLDS):
+            if self._is_free_email_domain(domain) or any(
+                domain.endswith(tld) for tld in self.SUSPICIOUS_TLDS
+            ):
                 if "Spoofed Domain" not in threats:
                     score += 35
                     rules.append("Spoofed Domain")
                     threats.append("Spoofed Domain")
-                    findings.append(f"Role display name '{display_name}' sent from untrusted domain '{domain}'.")
+                    findings.append(
+                        f"Role display name '{display_name}' sent from untrusted domain '{domain}'."
+                    )
 
         # 6. Suspicious Sender TLD
         if any(domain.endswith(tld) for tld in self.SUSPICIOUS_TLDS):
@@ -445,7 +500,9 @@ class EmailVerificationService:
         url_pattern = r"https?://[^\s<>\"']+|www\.[^\s<>\"']+"
         return re.findall(url_pattern, text)
 
-    def _inspect_urls(self, body: str, is_trusted_sender: bool) -> Tuple[int, List[str], List[str], List[str]]:
+    def _inspect_urls(
+        self, body: str, is_trusted_sender: bool
+    ) -> Tuple[int, List[str], List[str], List[str]]:
         score = 0
         rules = []
         threats = []
@@ -472,14 +529,28 @@ class EmailVerificationService:
 
             path = (parsed.path + "?" + parsed.query).lower()
             if any(hostname.endswith(tld) for tld in self.SUSPICIOUS_TLDS):
-                sensitive_terms = ["login", "signin", "bank", "verify", "account", "wallet", "secure"]
+                sensitive_terms = [
+                    "login",
+                    "signin",
+                    "bank",
+                    "verify",
+                    "account",
+                    "wallet",
+                    "secure",
+                ]
                 if any(term in path or term in hostname for term in sensitive_terms):
                     score += 25
                     rules.append("Suspicious Domain TLD")
                     threats.append("Suspicious Domain")
                     findings.append(f"Suspicious TLD with sensitive path: '{url_str}'")
 
-            fake_login_keywords = ["account-update", "webmail", "secure-login", "banking-verify", "login-verify"]
+            fake_login_keywords = [
+                "account-update",
+                "webmail",
+                "secure-login",
+                "banking-verify",
+                "login-verify",
+            ]
             if any(kw in path for kw in fake_login_keywords):
                 score += 25
                 rules.append("Fake Login Page")
@@ -487,10 +558,15 @@ class EmailVerificationService:
                 findings.append(f"Suspicious login path in URL: '{url_str}'")
 
         # Link Text Mismatch
-        mismatch_pattern = r"<a\s+[^>]*href=[\"'](https?://[^\"']+)[\"'][^>]*>(https?://[^<]+|www\.[^<]+)</a>"
+        mismatch_pattern = (
+            r"<a\s+[^>]*href=[\"'](https?://[^\"']+)[\"'][^>]*>(https?://[^<]+|www\.[^<]+)</a>"
+        )
         for href, text_url in re.findall(mismatch_pattern, body, re.IGNORECASE):
             href_domain = urlparse(href).hostname or ""
-            text_domain = urlparse(text_url if text_url.startswith("http") else "http://" + text_url).hostname or ""
+            text_domain = (
+                urlparse(text_url if text_url.startswith("http") else "http://" + text_url).hostname
+                or ""
+            )
             if href_domain.lower() != text_domain.lower() and not is_trusted_sender:
                 score += 20
                 rules.append("Mismatched Link Text")
@@ -499,7 +575,9 @@ class EmailVerificationService:
 
         return score, rules, threats, findings
 
-    def _validate_attachments(self, email: EmailMetadata) -> Tuple[int, List[str], List[str], List[str]]:
+    def _validate_attachments(
+        self, email: EmailMetadata
+    ) -> Tuple[int, List[str], List[str], List[str]]:
         score = 0
         rules = []
         threats = []
@@ -521,7 +599,15 @@ class EmailVerificationService:
                 threats.append("Macro-Enabled Office File")
                 findings.append(f"Macro-enabled document reference '{ext}'")
 
-        if any(term in combined_text for term in ["password is", "zip password", "encrypted zip", "password-protected archive"]):
+        if any(
+            term in combined_text
+            for term in [
+                "password is",
+                "zip password",
+                "encrypted zip",
+                "password-protected archive",
+            ]
+        ):
             score += 15
             rules.append("Password Protected Archive")
             threats.append("Password Protected Archive")
@@ -529,6 +615,7 @@ class EmailVerificationService:
 
         if email.attachment_mime_info:
             from src.infrastructure.processing.attachment_validator import validate_attachments
+
             mime_results = validate_attachments(email.attachment_mime_info)
             for res in mime_results:
                 if res.is_dangerous:
@@ -544,7 +631,9 @@ class EmailVerificationService:
 
         return score, rules, threats, findings
 
-    def _check_email_authentication(self, email: EmailMetadata) -> Tuple[int, List[str], List[str], List[str]]:
+    def _check_email_authentication(
+        self, email: EmailMetadata
+    ) -> Tuple[int, List[str], List[str], List[str]]:
         from src.infrastructure.processing.auth_validator import parse_auth_results
 
         score = 0
@@ -561,11 +650,15 @@ class EmailVerificationService:
             score += auth_result.risk_contribution
             rules.extend(auth_result.triggered_rules())
             threats.append("Email Authentication Failed")
-            findings.extend([f"Authentication check failed: {rule}" for rule in auth_result.triggered_rules()])
+            findings.extend(
+                [f"Authentication check failed: {rule}" for rule in auth_result.triggered_rules()]
+            )
 
         return score, rules, threats, findings
 
-    def _analyze_subject(self, subject: str, is_trusted_sender: bool) -> Tuple[int, List[str], List[str], List[str]]:
+    def _analyze_subject(
+        self, subject: str, is_trusted_sender: bool
+    ) -> Tuple[int, List[str], List[str], List[str]]:
         score = 0
         rules = []
         threats = []
@@ -586,7 +679,9 @@ class EmailVerificationService:
 
         return score, rules, threats, findings
 
-    def _analyze_body_urgency(self, body: str, is_trusted_sender: bool) -> Tuple[int, List[str], List[str], List[str]]:
+    def _analyze_body_urgency(
+        self, body: str, is_trusted_sender: bool
+    ) -> Tuple[int, List[str], List[str], List[str]]:
         """
         Issue #2: Separate urgency analysis on email body.
         Body urgency is scored lower than subject urgency (more false positives),
@@ -618,7 +713,9 @@ class EmailVerificationService:
 
         return score, rules, threats, findings
 
-    def _analyze_content(self, body: str, is_trusted_sender: bool) -> Tuple[int, List[str], List[str], List[str]]:
+    def _analyze_content(
+        self, body: str, is_trusted_sender: bool
+    ) -> Tuple[int, List[str], List[str], List[str]]:
         score = 0
         rules = []
         threats = []
@@ -687,7 +784,9 @@ class EmailVerificationService:
             all_findings.extend(j_findings)
 
             # 1c. URL Inspection
-            u_score, u_rules, u_threats, u_findings = self._inspect_urls(email.body, is_trusted_sender)
+            u_score, u_rules, u_threats, u_findings = self._inspect_urls(
+                email.body, is_trusted_sender
+            )
             total_risk_score += u_score
             all_rules.extend(u_rules)
             all_threats.extend(u_threats)
@@ -705,7 +804,9 @@ class EmailVerificationService:
                 logger.info("Attachment Validation Passed")
 
             # 1e. Subject Analysis (Issues #1, #2)
-            sub_score, sub_rules, sub_threats, sub_findings = self._analyze_subject(email.subject, is_trusted_sender)
+            sub_score, sub_rules, sub_threats, sub_findings = self._analyze_subject(
+                email.subject, is_trusted_sender
+            )
             total_risk_score += sub_score
             all_rules.extend(sub_rules)
             all_threats.extend(sub_threats)
@@ -714,21 +815,27 @@ class EmailVerificationService:
                 logger.info("Subject Analysis Passed")
 
             # 1f. Body Urgency Analysis (Issue #2)
-            bu_score, bu_rules, bu_threats, bu_findings = self._analyze_body_urgency(email.body, is_trusted_sender)
+            bu_score, bu_rules, bu_threats, bu_findings = self._analyze_body_urgency(
+                email.body, is_trusted_sender
+            )
             total_risk_score += bu_score
             all_rules.extend(bu_rules)
             all_threats.extend(bu_threats)
             all_findings.extend(bu_findings)
 
             # 1g. Content Scam Pattern Analysis
-            c_score, c_rules, c_threats, c_findings = self._analyze_content(email.body, is_trusted_sender)
+            c_score, c_rules, c_threats, c_findings = self._analyze_content(
+                email.body, is_trusted_sender
+            )
             total_risk_score += c_score
             all_rules.extend(c_rules)
             all_threats.extend(c_threats)
             all_findings.extend(c_findings)
 
             # 1h. Email Authentication (SPF/DKIM/DMARC)
-            auth_score, auth_rules, auth_threats, auth_findings = self._check_email_authentication(email)
+            auth_score, auth_rules, auth_threats, auth_findings = self._check_email_authentication(
+                email
+            )
             total_risk_score += auth_score
             all_rules.extend(auth_rules)
             all_threats.extend(auth_threats)
@@ -743,13 +850,19 @@ class EmailVerificationService:
 
         # 2. Smart AI Routing
         # Lowered safe threshold from 20 → 15 to route more ambiguous emails through AI
-        should_call_ai = settings.verification.enable_ai_verification and self.ai_provider is not None
+        should_call_ai = (
+            settings.verification.enable_ai_verification and self.ai_provider is not None
+        )
         if should_call_ai and getattr(settings.verification, "enable_smart_ai_routing", True):
             if clamped_risk_score <= 15:
-                logger.info(f"Smart AI Routing: Risk score {clamped_risk_score} <= 15 (clearly safe). Skipping AI call.")
+                logger.info(
+                    f"Smart AI Routing: Risk score {clamped_risk_score} <= 15 (clearly safe). Skipping AI call."
+                )
                 should_call_ai = False
             elif clamped_risk_score >= 75:
-                logger.info(f"Smart AI Routing: Risk score {clamped_risk_score} >= 75 (clearly malicious). Skipping AI call.")
+                logger.info(
+                    f"Smart AI Routing: Risk score {clamped_risk_score} >= 75 (clearly malicious). Skipping AI call."
+                )
                 should_call_ai = False
 
         ai_result: Optional[VerificationResult] = None
@@ -759,7 +872,9 @@ class EmailVerificationService:
             logger.info("AI Verification Started")
             try:
                 if hasattr(self.ai_provider, "verify_email"):
-                    ai_result = await self.ai_provider.verify_email(email, rule_findings=all_findings)
+                    ai_result = await self.ai_provider.verify_email(
+                        email, rule_findings=all_findings
+                    )
                     logger.info("AI Verification Completed")
                 else:
                     logger.warning("AI Provider does not implement verify_email. Skipping AI call.")
@@ -803,7 +918,10 @@ class EmailVerificationService:
             all_threats = list(dict.fromkeys(all_threats + ai_result.threats))
             confidence = (confidence + ai_result.confidence) / 2.0
 
-            if not ai_result.is_legitimate or ai_result.confidence < settings.verification.verification_confidence_threshold:
+            if (
+                not ai_result.is_legitimate
+                or ai_result.confidence < settings.verification.verification_confidence_threshold
+            ):
                 final_is_legitimate = False
                 if ai_result.risk_level in ["High", "Critical"]:
                     risk_level = ai_result.risk_level
@@ -811,7 +929,9 @@ class EmailVerificationService:
             else:
                 if rule_is_legitimate:
                     final_is_legitimate = True
-                    final_reason = f"Verified Legitimate by Rules and AI. AI Reason: {ai_result.reason}"
+                    final_reason = (
+                        f"Verified Legitimate by Rules and AI. AI Reason: {ai_result.reason}"
+                    )
 
         status = "Legitimate" if final_is_legitimate else "Suspicious"
         decision = "Notification Sent" if final_is_legitimate else "Notification Blocked"

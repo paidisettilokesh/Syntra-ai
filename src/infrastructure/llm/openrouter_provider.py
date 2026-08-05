@@ -132,8 +132,7 @@ class OpenRouterProvider(ILLMProvider):
             )
             latency = time.monotonic() - t_start
             logger.info(
-                f"[LLM] Provider=OpenRouter Model={model} Status=Success "
-                f"latency={latency:.2f}s"
+                f"[LLM] Provider=OpenRouter Model={model} Status=Success " f"latency={latency:.2f}s"
             )
             return completion.choices[0].message.content
 
@@ -161,8 +160,7 @@ class OpenRouterProvider(ILLMProvider):
         """
         if not self._is_available():
             raise AIProviderError(
-                "OpenRouterProvider: OPENROUTER_API_KEY not configured — "
-                "provider unavailable."
+                "OpenRouterProvider: OPENROUTER_API_KEY not configured — " "provider unavailable."
             )
 
         for i, model in enumerate(self._models):
@@ -171,18 +169,13 @@ class OpenRouterProvider(ILLMProvider):
 
             except Exception:
                 # Log and advance to the next model — exception already logged inside _call_model
-                is_last = (i == len(self._models) - 1)
+                is_last = i == len(self._models) - 1
                 if not is_last:
                     next_model = self._models[i + 1]
-                    logger.info(
-                        f"[LLM] Provider=OpenRouter trying next model: {next_model}"
-                    )
+                    logger.info(f"[LLM] Provider=OpenRouter trying next model: {next_model}")
 
         # All models failed
         logger.error(
-            f"[LLM] Provider=OpenRouter Status=AllModelsFailed "
-            f"models_tried={self._models}"
+            f"[LLM] Provider=OpenRouter Status=AllModelsFailed " f"models_tried={self._models}"
         )
-        raise AIProviderError(
-            f"OpenRouter provider failed on all models: {self._models}"
-        )
+        raise AIProviderError(f"OpenRouter provider failed on all models: {self._models}")

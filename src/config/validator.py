@@ -19,7 +19,9 @@ class StartupValidator:
                 path.mkdir(parents=True, exist_ok=True)
                 logger.info(f"Created missing directory: {d}")
             if not os.access(path, os.W_OK):
-                raise InvalidConfiguration(f"Directory '{d}' is not writable. Check filesystem permissions.")
+                raise InvalidConfiguration(
+                    f"Directory '{d}' is not writable. Check filesystem permissions."
+                )
 
         # 2. Validate Email config
         if len(settings.email.user_list) != len(settings.email.password_list):
@@ -53,7 +55,9 @@ class StartupValidator:
             logger.warning("[SELF-TEST] Groq API Key missing or placeholder.")
 
         if openrouter_key:
-            logger.info(f"[SELF-TEST] OpenRouter Provider valid. Key: {mask_secret(openrouter_key)}")
+            logger.info(
+                f"[SELF-TEST] OpenRouter Provider valid. Key: {mask_secret(openrouter_key)}"
+            )
         else:
             logger.warning("[SELF-TEST] OpenRouter API Key missing or placeholder.")
 

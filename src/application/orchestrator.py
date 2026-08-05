@@ -27,7 +27,9 @@ class EmailOrchestrator:
         self.ai_provider = ai_provider
         self.notification_services = notification_services
         self.rule_engine = RuleEngine()
-        self.verification_service = verification_service or EmailVerificationService(ai_provider=ai_provider)
+        self.verification_service = verification_service or EmailVerificationService(
+            ai_provider=ai_provider
+        )
         # Issue #12: In-memory deduplication cache for hot-path performance.
         # Avoids a DB query for emails already seen in this process session.
         self._seen_email_ids: set = set()
@@ -44,11 +46,15 @@ class EmailOrchestrator:
         for email in emails:
             # Issue #5 & #12: In-memory dedup check first (fast), then DB check (persistent)
             if email.message_id in self._seen_email_ids:
-                logger.debug(f"In-memory dedup hit — skipping already-seen email: {email.message_id}")
+                logger.debug(
+                    f"In-memory dedup hit — skipping already-seen email: {email.message_id}"
+                )
                 continue
 
             if self.repository.is_email_processed(email.message_id):
-                logger.info(f"Skipping already-processed email: '{email.subject}' [{email.message_id}]")
+                logger.info(
+                    f"Skipping already-processed email: '{email.subject}' [{email.message_id}]"
+                )
                 self._seen_email_ids.add(email.message_id)
                 continue
 
@@ -99,7 +105,11 @@ class EmailOrchestrator:
             should_notify = False
             notification_status = "suppressed"
 
-            notify_all = os.environ.get("NOTIFY_ALL_EMAILS", "false").lower() in ("true", "1", "yes")
+            notify_all = os.environ.get("NOTIFY_ALL_EMAILS", "false").lower() in (
+                "true",
+                "1",
+                "yes",
+            )
 
             if (
                 notify_all
@@ -107,7 +117,10 @@ class EmailOrchestrator:
                 or analysis.action_required
                 or analysis.category in high_priority_categories
             ):
-                if verification_result.is_legitimate or not settings.verification.block_suspicious_emails:
+                if (
+                    verification_result.is_legitimate
+                    or not settings.verification.block_suspicious_emails
+                ):
                     should_notify = True
                 else:
                     logger.warning(
@@ -131,7 +144,9 @@ class EmailOrchestrator:
                     already_sent = False
 
                 if already_sent:
-                    logger.info(f"  -> Notification already sent for {email.message_id}. Skipping duplicate.")
+                    logger.info(
+                        f"  -> Notification already sent for {email.message_id}. Skipping duplicate."
+                    )
                     notification_status = "sent"
                 else:
                     logger.info(
@@ -145,7 +160,9 @@ class EmailOrchestrator:
                             notifier.send_alert(email, analysis, verification_result)
                             success_count += 1
                         except Exception as e:
-                            logger.warning(f"  -> Notification failed via {notifier.__class__.__name__}: {e}")
+                            logger.warning(
+                                f"  -> Notification failed via {notifier.__class__.__name__}: {e}"
+                            )
 
                     if success_count == 0 and self.notification_services:
                         notification_status = "failed"

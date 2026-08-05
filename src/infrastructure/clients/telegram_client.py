@@ -1,7 +1,8 @@
 import os
 import time
-import requests
 from typing import Optional
+
+import requests
 
 from src.config.settings import settings
 from src.domain.exceptions import NotificationError
@@ -79,7 +80,9 @@ class TelegramNotificationService(INotificationService):
         # Sanitize all dynamic content (Issue #11)
         safe_sender = sanitize_html_for_telegram(email.sender or "Unknown Sender", max_length=200)
         safe_subject = sanitize_html_for_telegram(email.subject or "No Subject", max_length=300)
-        safe_category = sanitize_html_for_telegram(analysis.category or "Informational", max_length=100)
+        safe_category = sanitize_html_for_telegram(
+            analysis.category or "Informational", max_length=100
+        )
         safe_summary = sanitize_html_for_telegram(analysis.summary or "", max_length=500)
 
         lines = [
@@ -97,13 +100,13 @@ class TelegramNotificationService(INotificationService):
             status_emoji = _STATUS_EMOJI.get(verification_result.status, "❓")
 
             safe_status = sanitize_html_for_telegram(verification_result.status, max_length=50)
-            safe_risk_level = sanitize_html_for_telegram(verification_result.risk_level, max_length=20)
+            safe_risk_level = sanitize_html_for_telegram(
+                verification_result.risk_level, max_length=20
+            )
             safe_reason = sanitize_html_for_telegram(verification_result.reason, max_length=400)
 
             lines.append("─" * 20)
-            lines.append(
-                f"🔐 <b>Security Verdict:</b> {status_emoji} {safe_status}"
-            )
+            lines.append(f"🔐 <b>Security Verdict:</b> {status_emoji} {safe_status}")
             lines.append(
                 f"{risk_emoji} <b>Risk Score:</b> {verification_result.risk_score}/100 "
                 f"({safe_risk_level})"

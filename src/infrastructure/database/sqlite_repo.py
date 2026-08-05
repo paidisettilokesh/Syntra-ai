@@ -1,4 +1,3 @@
-import json
 import sqlite3
 import threading
 from typing import Any, Dict, List, Optional
@@ -75,15 +74,11 @@ class SQLiteRepository(IRepository):
                         )
 
             # Issue #12: Performance indexes
-            cursor.execute(
-                "CREATE INDEX IF NOT EXISTS idx_email_id ON processed_emails(email_id)"
-            )
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_email_id ON processed_emails(email_id)")
             cursor.execute(
                 "CREATE INDEX IF NOT EXISTS idx_processed_at ON processed_emails(processed_at DESC)"
             )
-            cursor.execute(
-                "CREATE INDEX IF NOT EXISTS idx_category ON processed_emails(category)"
-            )
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_category ON processed_emails(category)")
             cursor.execute(
                 "CREATE INDEX IF NOT EXISTS idx_notification_status ON processed_emails(notification_status)"
             )
@@ -215,38 +210,32 @@ class SQLiteRepository(IRepository):
             avg_risk = round(row["avg_risk"] or 0.0, 1)
 
             # Category distribution
-            cursor.execute(
-                """
+            cursor.execute("""
                 SELECT category, COUNT(*) as count
                 FROM processed_emails
                 WHERE category IS NOT NULL
                 GROUP BY category
                 ORDER BY count DESC
-            """
-            )
+            """)
             categories = {row["category"]: row["count"] for row in cursor.fetchall()}
 
             # Risk level distribution
-            cursor.execute(
-                """
+            cursor.execute("""
                 SELECT risk_level, COUNT(*) as count
                 FROM processed_emails
                 WHERE risk_level IS NOT NULL
                 GROUP BY risk_level
-            """
-            )
+            """)
             risk_levels = {row["risk_level"]: row["count"] for row in cursor.fetchall()}
 
             # Emails per day (last 7 days)
-            cursor.execute(
-                """
+            cursor.execute("""
                 SELECT DATE(processed_at) as day, COUNT(*) as count
                 FROM processed_emails
                 WHERE processed_at >= DATE('now', '-7 days')
                 GROUP BY day
                 ORDER BY day ASC
-            """
-            )
+            """)
             daily = [{"day": row["day"], "count": row["count"]} for row in cursor.fetchall()]
 
             return {

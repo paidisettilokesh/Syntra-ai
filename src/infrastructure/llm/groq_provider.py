@@ -18,14 +18,13 @@ Structured log format:
 """
 
 import asyncio
+import os
 import random
 import time
 from typing import Optional
 
 import groq
 from groq import AsyncGroq
-
-import os
 
 from src.config.settings import settings
 from src.domain.exceptions import AIProviderError
@@ -36,15 +35,15 @@ from src.utils.sanitizer import is_valid_api_key, mask_secret
 logger = get_logger(__name__)
 
 # ── Retry configuration ────────────────────────────────────────────────────────
-_MAX_RETRIES: int = 2          # 2 retries = 3 total attempts
-_BASE_DELAY: float = 1.0       # seconds — doubles each attempt + jitter
+_MAX_RETRIES: int = 2  # 2 retries = 3 total attempts
+_BASE_DELAY: float = 1.0  # seconds — doubles each attempt + jitter
 
 # Error types that are safe to retry (transient failures)
 _RETRIABLE_ERRORS = (
-    groq.RateLimitError,        # HTTP 429 — quota / rate limit exceeded
-    groq.APITimeoutError,       # Request timed out
-    groq.APIConnectionError,    # Network / DNS failure
-    groq.InternalServerError,   # HTTP 5xx — Groq server-side error
+    groq.RateLimitError,  # HTTP 429 — quota / rate limit exceeded
+    groq.APITimeoutError,  # Request timed out
+    groq.APIConnectionError,  # Network / DNS failure
+    groq.InternalServerError,  # HTTP 5xx — Groq server-side error
 )
 
 
@@ -79,9 +78,7 @@ class GroqProvider(ILLMProvider):
         else:
             # Reuse one client for the lifetime of the process
             self._client = AsyncGroq(api_key=raw_key)
-            logger.info(
-                f"[LLM] GroqProvider initialized. Key: {mask_secret(raw_key)}"
-            )
+            logger.info(f"[LLM] GroqProvider initialized. Key: {mask_secret(raw_key)}")
 
     @property
     def provider_name(self) -> str:
@@ -154,7 +151,7 @@ class GroqProvider(ILLMProvider):
                     ) from exc
 
                 # Exponential backoff with uniform jitter to avoid thundering herd
-                delay = _BASE_DELAY * (2 ** attempt) + random.uniform(0.0, 1.0)
+                delay = _BASE_DELAY * (2**attempt) + random.uniform(0.0, 1.0)
                 logger.info(
                     f"[LLM] Groq retrying in {delay:.2f}s "
                     f"(attempt {attempt + 1} of {_MAX_RETRIES})"
@@ -187,9 +184,7 @@ class GroqProvider(ILLMProvider):
 
         # ── Primary model ──────────────────────────────────────────────────────
         try:
-            return await self._call_model(
-                self._PRIMARY_MODEL, system_prompt, user_prompt
-            )
+            return await self._call_model(self._PRIMARY_MODEL, system_prompt, user_prompt)
         except AIProviderError as exc:
             logger.warning(
                 f"[LLM] Groq primary model '{self._PRIMARY_MODEL}' exhausted. "
@@ -203,15 +198,11 @@ class GroqProvider(ILLMProvider):
 
         # ── Groq-internal fallback model ───────────────────────────────────────
         try:
-            return await self._call_model(
-                self._FALLBACK_MODEL, system_prompt, user_prompt
-            )
+            return await self._call_model(self._FALLBACK_MODEL, system_prompt, user_prompt)
         except Exception as exc:
             logger.error(
                 f"[LLM] Provider=Groq Status=Failed "
                 f"Both models ({self._PRIMARY_MODEL}, {self._FALLBACK_MODEL}) exhausted. "
                 f"Error: {exc}"
             )
-            raise AIProviderError(
-                f"Groq provider failed on all models: {exc}"
-            ) from exc
+            raise AIProviderError(f"Groq provider failed on all models: {exc}") from exc

@@ -21,11 +21,15 @@ class GmailClient(IMailClient):
         self.user = user
         self.password = password
         self.server = settings.email.imap_server
-        self.circuit_breaker = CircuitBreaker(
-            name=f"Gmail-{self.user}",
-            failure_threshold=3,
-            recovery_timeout=300.0,
-        ) if settings.features.enable_circuit_breaker else None
+        self.circuit_breaker = (
+            CircuitBreaker(
+                name=f"Gmail-{self.user}",
+                failure_threshold=3,
+                recovery_timeout=300.0,
+            )
+            if settings.features.enable_circuit_breaker
+            else None
+        )
 
     def _decode_mime_words(self, s: str) -> str:
         if not s:
@@ -69,7 +73,9 @@ class GmailClient(IMailClient):
                             message_id = raw_message_id
                         else:
                             fingerprint = f"{sender}|{subject}|{date_str}"
-                            message_id = "hash-" + hashlib.sha256(fingerprint.encode()).hexdigest()[:32]
+                            message_id = (
+                                "hash-" + hashlib.sha256(fingerprint.encode()).hexdigest()[:32]
+                            )
                             logger.debug(
                                 f"No Message-ID header found. Using deterministic hash ID: {message_id}"
                             )
@@ -89,11 +95,21 @@ class GmailClient(IMailClient):
                                 content_type = part.get_content_type()
                                 content_disposition = str(part.get("Content-Disposition"))
 
-                                if content_type == "text/html" and "attachment" not in content_disposition:
-                                    body_html = part.get_payload(decode=True).decode(errors="ignore")
+                                if (
+                                    content_type == "text/html"
+                                    and "attachment" not in content_disposition
+                                ):
+                                    body_html = part.get_payload(decode=True).decode(
+                                        errors="ignore"
+                                    )
                                     body += clean_email_body(body_html) + "\n"
-                                elif content_type == "text/plain" and "attachment" not in content_disposition:
-                                    body_plain = part.get_payload(decode=True).decode(errors="ignore")
+                                elif (
+                                    content_type == "text/plain"
+                                    and "attachment" not in content_disposition
+                                ):
+                                    body_plain = part.get_payload(decode=True).decode(
+                                        errors="ignore"
+                                    )
                                     body += clean_email_body(body_plain) + "\n"
                                 elif "attachment" in content_disposition:
                                     filename = part.get_filename()
@@ -106,12 +122,14 @@ class GmailClient(IMailClient):
                                                 )
                                                 continue
                                             attachments.append((filename, payload))
-                                            attachment_mime_info.append({
-                                                "filename": filename,
-                                                "declared_mime": content_type,
-                                                "payload": payload,
-                                                "size": len(payload)
-                                            })
+                                            attachment_mime_info.append(
+                                                {
+                                                    "filename": filename,
+                                                    "declared_mime": content_type,
+                                                    "payload": payload,
+                                                    "size": len(payload),
+                                                }
+                                            )
                         else:
                             try:
                                 raw_body = msg.get_payload(decode=True).decode(errors="ignore")
@@ -122,15 +140,17 @@ class GmailClient(IMailClient):
                         # Explicitly mark as seen (Server-side Idempotency)
                         mail.store(e_id, "+FLAGS", "\\Seen")
 
-                        raw_results.append({
-                            "message_id": message_id,
-                            "sender": sender,
-                            "subject": subject,
-                            "body": body.strip(),
-                            "attachments": attachments,
-                            "auth_headers": auth_headers,
-                            "attachment_mime_info": attachment_mime_info
-                        })
+                        raw_results.append(
+                            {
+                                "message_id": message_id,
+                                "sender": sender,
+                                "subject": subject,
+                                "body": body.strip(),
+                                "attachments": attachments,
+                                "auth_headers": auth_headers,
+                                "attachment_mime_info": attachment_mime_info,
+                            }
+                        )
         finally:
             try:
                 mail.logout()
@@ -148,7 +168,7 @@ class GmailClient(IMailClient):
                 )
             else:
                 raw_emails = await asyncio.to_thread(self._fetch_emails_sync)
-                
+
             for raw in raw_emails:
                 attachment_text = ""
                 for filename, payload in raw["attachments"]:
@@ -164,7 +184,7 @@ class GmailClient(IMailClient):
                         body=raw["body"],
                         attachment_text=attachment_text.strip(),
                         auth_headers=raw["auth_headers"],
-                        attachment_mime_info=raw["attachment_mime_info"]
+                        attachment_mime_info=raw["attachment_mime_info"],
                     )
                 )
         except RuntimeError as e:
@@ -172,5 +192,5 @@ class GmailClient(IMailClient):
             logger.warning(str(e))
         except Exception as e:
             logger.error(f"Gmail error for {self.user}: {e}")
-            
+
         return emails

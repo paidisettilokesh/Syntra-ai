@@ -36,12 +36,22 @@ class AnalysisResult(BaseModel):
 
 
 class VerificationResult(BaseModel):
-    is_legitimate: bool = Field(..., description="True if email is verified as legitimate, False otherwise")
-    status: str = Field("Legitimate", description="Verification Status: 'Legitimate' or 'Suspicious'")
+    is_legitimate: bool = Field(
+        ..., description="True if email is verified as legitimate, False otherwise"
+    )
+    status: str = Field(
+        "Legitimate", description="Verification Status: 'Legitimate' or 'Suspicious'"
+    )
     confidence: float = Field(..., description="Confidence score from 0 to 100")
     risk_score: int = Field(0, description="Risk score from 0 to 100")
     risk_level: str = Field(..., description="Low, Medium, High, or Critical")
-    decision: str = Field("Notification Sent", description="Decision: 'Notification Sent' or 'Notification Blocked'")
+    decision: str = Field(
+        "Notification Sent", description="Decision: 'Notification Sent' or 'Notification Blocked'"
+    )
     reason: str = Field(..., description="Explanation of the verification verdict")
-    triggered_rules: List[str] = Field(default_factory=list, description="List of triggered verification rules")
-    threats: List[str] = Field(default_factory=list, description="List of detected threat indicators")
+    triggered_rules: List[str] = Field(
+        default_factory=list, description="List of triggered verification rules"
+    )
+    threats: List[str] = Field(
+        default_factory=list, description="List of detected threat indicators"
+    )

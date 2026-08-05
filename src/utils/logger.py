@@ -16,8 +16,15 @@ class StructuredJsonFormatter(logging.Formatter):
             "msg": record.getMessage(),
         }
         # Include structured extras if present
-        for key in ("email_id", "sender", "category", "risk_score",
-                    "notification_status", "duration_ms", "verification_status"):
+        for key in (
+            "email_id",
+            "sender",
+            "category",
+            "risk_score",
+            "notification_status",
+            "duration_ms",
+            "verification_status",
+        ):
             if hasattr(record, key):
                 log_entry[key] = getattr(record, key)
 
@@ -104,8 +111,7 @@ def get_logger(name: str) -> logging.Logger:
     except (OSError, PermissionError) as e:
         # Do not crash if log file cannot be opened; console logging continues
         logger.warning(
-            f"Could not configure file logging at '{log_file}': {e}. "
-            "Logging to console only."
+            f"Could not configure file logging at '{log_file}': {e}. " "Logging to console only."
         )
 
     return logger

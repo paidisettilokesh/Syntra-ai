@@ -7,10 +7,10 @@ Central security utility module for:
 - HTML sanitization for notifications
 - Text length enforcement
 """
+
 import html
 import re
 from typing import Optional
-
 
 # Patterns that indicate prompt injection attempts within email content
 _INJECTION_PATTERNS = [

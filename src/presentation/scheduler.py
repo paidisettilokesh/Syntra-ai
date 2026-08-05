@@ -29,7 +29,7 @@ class AgentScheduler:
                 loop.add_signal_handler(sig, self.stop)
 
         logger.info("🚀 AI Email Triage Agent Started. Listening for new emails...")
-        
+
         while not self._stop_event.is_set():
             try:
                 await self.orchestrator.process_inboxes()
@@ -40,8 +40,8 @@ class AgentScheduler:
                 break
 
             logger.info(f"Sleeping for {self.poll_interval} seconds...")
-            
-            # Use wait_for on the event instead of asyncio.sleep 
+
+            # Use wait_for on the event instead of asyncio.sleep
             # so we wake up immediately on shutdown signal
             try:
                 await asyncio.wait_for(self._stop_event.wait(), timeout=self.poll_interval)

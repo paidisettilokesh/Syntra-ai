@@ -23,9 +23,9 @@ logger = get_logger(__name__)
 
 
 class CircuitState(Enum):
-    CLOSED = "CLOSED"       # Normal operation — calls are allowed
-    OPEN = "OPEN"           # Failing fast — calls are blocked
-    HALF_OPEN = "HALF_OPEN" # Probe state — one trial call is allowed
+    CLOSED = "CLOSED"  # Normal operation — calls are allowed
+    OPEN = "OPEN"  # Failing fast — calls are blocked
+    HALF_OPEN = "HALF_OPEN"  # Probe state — one trial call is allowed
 
 
 class CircuitBreaker:
