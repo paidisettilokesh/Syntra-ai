@@ -46,14 +46,14 @@ class GmailClient(IMailClient):
             mail.login(self.user, self.password)
             mail.select("inbox")
 
-            status, messages = mail.search(None, "UNSEEN")
+            status, messages = mail.search(None, "ALL")
             if status != "OK" or not messages[0]:
                 return raw_results
 
-            # Limit to 20 most recent unseen emails
-            email_ids = messages[0].split()[-20:]
+            # Limit to 25 most recent inbox emails (deduplicated by SQLite repository)
+            email_ids = messages[0].split()[-25:]
             for e_id in email_ids:
-                status, msg_data = mail.fetch(e_id, "(RFC822)")
+                status, msg_data = mail.fetch(e_id, "(BODY.PEEK[])")
                 for response_part in msg_data:
                     if isinstance(response_part, tuple):
                         msg = email.message_from_bytes(response_part[1])
