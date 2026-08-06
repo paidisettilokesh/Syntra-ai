@@ -5,6 +5,7 @@ from typing import List, Optional
 from src.application.rule_engine import RuleEngine
 from src.application.services.email_verification import EmailVerificationService
 from src.config.settings import settings
+from src.domain.exceptions import NotificationError
 from src.domain.interfaces import IAIProvider, IMailClient, INotificationService, IRepository
 from src.domain.models import VerificationResult
 from src.utils.audit_log import log_email_processed
@@ -100,7 +101,12 @@ class EmailOrchestrator:
                 "Bank",
                 "Deadline",
                 "Personal",
+                "Informational",
+                "Meeting",
+                "Update",
             ]
+
+            min_score_threshold = int(os.environ.get("NOTIFICATION_MIN_SCORE", "5"))
 
             should_notify = False
             notification_status = "suppressed"
@@ -113,7 +119,7 @@ class EmailOrchestrator:
 
             if (
                 notify_all
-                or analysis.importance_score >= 7
+                or analysis.importance_score >= min_score_threshold
                 or analysis.action_required
                 or analysis.category in high_priority_categories
             ):
@@ -154,20 +160,31 @@ class EmailOrchestrator:
                         f"(Risk: {verification_result.risk_score}/100, Level: {verification_result.risk_level})"
                     )
                     success_count = 0
+                    disabled_count = 0
                     for notifier in self.notification_services:
                         try:
                             # Issue #6: Pass verification_result for explainability in notifications
                             notifier.send_alert(email, analysis, verification_result)
                             success_count += 1
+                        except NotificationError as ne:
+                            if "disabled" in str(ne).lower():
+                                disabled_count += 1
+                                logger.info(f"  -> {notifier.__class__.__name__} is disabled.")
+                            else:
+                                logger.warning(
+                                    f"  -> Notification failed via {notifier.__class__.__name__}: {ne}"
+                                )
                         except Exception as e:
                             logger.warning(
                                 f"  -> Notification failed via {notifier.__class__.__name__}: {e}"
                             )
 
-                    if success_count == 0 and self.notification_services:
-                        notification_status = "failed"
-                    else:
+                    if success_count > 0:
                         notification_status = "sent"
+                    elif disabled_count > 0 and success_count == 0:
+                        notification_status = "disabled"
+                    else:
+                        notification_status = "failed"
 
             # 6. Save to DB with Verification Details (ALWAYS execute regardless of notification success)
             try:

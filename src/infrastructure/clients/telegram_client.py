@@ -175,7 +175,7 @@ class TelegramNotificationService(INotificationService):
         """
         if not self.is_enabled:
             logger.info("Telegram notifications are disabled by feature flag.")
-            return
+            raise NotificationError("Telegram notifications are disabled by feature flag.")
 
         if not self.bot_token or not self.chat_id:
             logger.warning("Invalid Telegram Chat ID or Bot Token. Skipping notification.")

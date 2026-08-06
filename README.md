@@ -54,8 +54,8 @@ cp .env.example .env
 GROQ_API_KEY="your_groq_api_key_here"
 
 # Dual Email Configurations
-EMAIL_USERS="lokeshpaidisetti@gmail.com,paidisettilokesh@gmail.com"
-EMAIL_PASSWORDS="app_password_1,app_password_2"
+EMAIL_USERS="paidisettilokesh@gmail.com"
+EMAIL_PASSWORDS="app_password_1"
 
 # Telegram Notifications
 TELEGRAM_BOT_TOKEN="7123456789:AAFx..."
