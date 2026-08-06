@@ -111,7 +111,7 @@ class EmailOrchestrator:
             should_notify = False
             notification_status = "suppressed"
 
-            notify_all = os.environ.get("NOTIFY_ALL_EMAILS", "false").lower() in (
+            notify_all = os.environ.get("NOTIFY_ALL_EMAILS", "true").lower() in (
                 "true",
                 "1",
                 "yes",
